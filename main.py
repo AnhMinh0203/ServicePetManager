@@ -4,13 +4,13 @@ from tkinter import messagebox,ttk
 import mysql.connector
 from datetime import datetime, date
 
-from DayStudy.BigExercises.BillManager import create_bill_manager_form
-from DayStudy.BigExercises.CustomerManager import create_customer_manager_form
-from DayStudy.BigExercises.EmployeeManager import create_employee_manager_form
-from DayStudy.BigExercises.ProductManager import add_product, refresh_treeview, create_product_add_form, \
+from ServicePetManager.BillManager import create_bill_manager_form
+from ServicePetManager.CustomerManager import create_customer_manager_form
+from ServicePetManager.EmployeeManager import create_employee_manager_form
+from ServicePetManager.ProductManager import add_product, refresh_treeview, create_product_add_form, \
     create_product_update_form, delete_product, search_product, create_product_manager_form
-from DayStudy.BigExercises.ReportManager import create_report_manager_form
-from DayStudy.BigExercises.SupplierManager import create_supplier_manager_form
+from ServicePetManager.ReportManager import create_report_manager_form
+from ServicePetManager.SupplierManager import create_supplier_manager_form
 
 id_user = None
 class Product:
@@ -81,8 +81,8 @@ class BillDetails:
 db = mysql.connector.connect(
     host = "localhost",
     user = "root",
-    password = "020303",
-    database="snackmanage"
+    password = "Abc@123456789",
+    database="petmanage"
 )
 cursor = db.cursor()
 

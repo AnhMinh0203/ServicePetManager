@@ -38,8 +38,8 @@ def create_chart(cursor, window_report_mg, param_date, status, result_total_pric
                 income.append(float((row[1])))
 
     elif status == "Day in month":
-        title_chart = 'Income report all day in ' + str(param_date[1])
-        dataframe_x = 'Quaters'
+        title_chart = 'Income report all day in ' + str(param_date[0])
+        dataframe_x = 'Day'
         cursor.callproc("GetDayIncomeInMonth", [param_date[0],param_date[1]])
         for result in cursor.stored_results():
             rows = result.fetchall()

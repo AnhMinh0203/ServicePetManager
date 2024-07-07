@@ -43,7 +43,7 @@ def update_employee (cursor,employee,tree,window_employee_ad,db,id_emp):
     refresh_treeview(tree, cursor)
 
 def create_employee_add_form(cursor,tree,db,id_user):
-    from DayStudy.BigExercises.main import Employee
+    from ServicePetManager.main import Employee
     def add_employee_action():
         name = entr_employee_name.get().strip()
         phone = entry_employee_phone.get().strip()
@@ -137,7 +137,7 @@ def detail_employee(cursor,id):
     else:
         return None
 def create_employee_update_form(cursor, tree, id_emp, db,id_user):
-    from DayStudy.BigExercises.main import Employee
+    from ServicePetManager.main import Employee
     def update_employee_action():
         name = entr_employee_name.get().strip()
         phone = entry_employee_phone.get().strip()

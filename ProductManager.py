@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import messagebox,ttk
 import mysql.connector
 from datetime import datetime
+from tkinter import filedialog
+import pandas as pd
 
 chosing_type = None
 def get_name_type(cursor,id):
@@ -59,7 +61,7 @@ def add_product(cursor, product, tree, window_product_ad, db):
     window_product_ad.destroy()
     refresh_treeview(tree, cursor)
 def create_product_add_form(cursor,tree,db,id_user):
-    from DayStudy.BigExercises.main import Product
+    from ServicePetManager.main import Product
 
     def get_supplier_id(select_supplier):
         name = select_supplier.get()
@@ -185,7 +187,7 @@ def update_product(cursor,product,tree,window_product_ad,id,db):
     refresh_treeview(tree,cursor)
 
 def create_product_update_form(cursor,tree,id_product,db,id_user):
-    from DayStudy.BigExercises.main import Product
+    from ServicePetManager.main import Product
 
 
     def get_types(cursor):
@@ -294,6 +296,12 @@ def create_product_update_form(cursor,tree,id_product,db,id_user):
 def delete_product(cursor,id_product,tree,db):
     ask = messagebox.askyesno("Confirm delete","Do you want to delete this product ?")
     if ask:
+        cursor.execute("SELECT Id from bill_detail where ProductId = %s", (id_product,))
+        rows = cursor.fetchall()
+        for row in rows:
+            print(row[0])
+            cursor.execute("Update bill_detail set ProductId = NULL  where id = %s", (row[0],))
+            db.commit()
         cursor.execute("Delete from product where id = %s",(id_product,))
         db.commit()
         refresh_treeview(tree,cursor)
@@ -440,6 +448,9 @@ def create_product_manager_form(cursor,db,id_user):
     heading_product_mg = Label(window_product_mg,text="PRODUCT MANAGEMENT",font=("Helvetica", 20, "bold"), fg="green")
     heading_product_mg.place(x=200, y=30, width=400, height=30)
 
+    button_product_manager = Button(window_product_mg, text="Export Excel",command=lambda: export_excel(cursor))
+    button_product_manager.place(x=50, y=80, width=80, height=30)
+
     # Search
     entr_search = Entry(window_product_mg)
     entr_search.place(x=400, y=80, width=300, height=30)
@@ -492,3 +503,66 @@ def create_product_manager_form(cursor,db,id_user):
 
     tree.bind("<<TreeviewSelect>>", on_tree_select)
     window_product_mg.mainloop()
+
+
+def export_excel(cursor):
+    Id = []
+    Name = []
+    TypeName = []
+    SupplierName = []
+    Sold = []
+    Inventory = []
+    Price = []
+    CreateBy = []
+    CreateDate = []
+    ModifiBy = []
+    ModifyDate = []
+
+    df = None
+
+    cursor.callproc('getAllProducts')
+    for result in cursor.stored_results():
+        rows = result.fetchall()
+        for row in rows:
+            Id.append(int(row[0]))
+            Name.append(row[1])
+            TypeName.append(row[2])
+            SupplierName.append(row[3])
+            Sold.append(int(row[4]))
+            Inventory.append(int(row[5]))
+            Price.append(float(row[6]))
+            CreateBy.append(int(row[7]))
+            CreateDate.append(pd.to_datetime(row[8]))
+            ModifiBy.append(int(row[9]))
+            ModifyDate.append(pd.to_datetime(row[10]))
+
+    df = pd.DataFrame({
+        'Id': Id,
+        'Name': Name,
+        'TypeName': TypeName,
+        'SupplierName': SupplierName,
+        'Sold': Sold,
+        'Inventory': Inventory,
+        'Price': Price,
+        'CreateBy': CreateBy,
+        'CreateDate': CreateDate,
+        'ModifiBy': ModifiBy,
+        'ModifyDate': ModifyDate
+    })
+
+    # Format the date columns as dd/mm/yyyy
+    df['CreateDate'] = df['CreateDate'].dt.strftime('%d/%m/%Y')
+    df['ModifyDate'] = df['ModifyDate'].dt.strftime('%d/%m/%Y')
+
+    file_path = filedialog.asksaveasfilename(defaultextension=".xlsx",
+                                             filetypes=[("Excel files", "*.xlsx"), ("All files", "*.*")])
+    if file_path:
+        # Export to Excel with formatting using pandas and xlsxwriter
+        with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
+            df.to_excel(writer, index=False, sheet_name='Sheet1')
+            workbook = writer.book
+            worksheet = writer.sheets['Sheet1']
+
+            header_format = workbook.add_format({'bg_color': '#66FF00', 'font_color': '#FFFFFF', 'bold': True})
+            for col_num, value in enumerate(df.columns.values):
+                worksheet.write(0, col_num, value, header_format)
