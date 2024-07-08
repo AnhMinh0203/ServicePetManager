@@ -106,9 +106,9 @@ def snackManager():
     pass
 
 def log_out(window_main):
-    confirm = messagebox.askyesno("Confirm Logout", "Are you sure you want to log out?")
+    confirm = messagebox.askyesno("Đăng xuất", "Bạn có muốn đăng xuất không?")
     if confirm:
-        messagebox.showinfo("Logged out", "You have been logged out successfully!")
+        messagebox.showinfo("Đăng xuất", "Đăng xuất thành công!")
         window_main.destroy()
         create_login_form(cursor)
 
@@ -138,30 +138,30 @@ def show_home_page(window_login,cursor):
     user_name = get_username()
     text_user = Label(window_main, text="Xin chào: " + user_name)
     text_user.place(x=550, y=10, width=300, height=30)
-    button_service_manager = Button(window_main, text="Service Manager",
+    button_service_manager = Button(window_main, text="Quản lý dịch vụ",
                                     command=lambda: create_service_manager_form(cursor, db, id_user))
     button_service_manager.place(x=30, y=50, width=200, height=30)
 
-    button_product_manager = Button(window_main, text="Product Manager", command=lambda: create_product_manager_form(cursor,db,id_user))
+    button_product_manager = Button(window_main, text="Quản lý sản phẩm", command=lambda: create_product_manager_form(cursor,db,id_user))
     button_product_manager.place(x=30, y=100, width=200, height=30)
 
-    button_employee_manager = Button(window_main, text="Employee Manager", command=lambda: create_employee_manager_form(cursor,db,id_user))
+    button_employee_manager = Button(window_main, text="Quản lý nhân viên", command=lambda: create_employee_manager_form(cursor,db,id_user))
     button_employee_manager.place(x=30, y=150, width=200, height=30)
 
-    button_supplier_manager = Button(window_main, text="Supplier Manager",
+    button_supplier_manager = Button(window_main, text="Quản lý nhà cung cấp",
                                      command=lambda: create_supplier_manager_form(cursor, db, id_user))
     button_supplier_manager.place(x=30, y=200, width=200, height=30)
 
-    button_report_manager = Button(window_main, text="Report Manager", command=lambda:create_report_manager_form(cursor))
+    button_report_manager = Button(window_main, text="Quản lý báo cáo", command=lambda:create_report_manager_form(cursor))
     button_report_manager.place(x=30, y=250, width=200, height=30)
 
-    button_bill_manager = Button(window_main, text="Bill Manager", command=lambda:create_bill_manager_form(cursor,db,id_user))
+    button_bill_manager = Button(window_main, text="Quản lý hóa đơn", command=lambda:create_bill_manager_form(cursor,db,id_user))
     button_bill_manager.place(x=30, y=300, width=200, height=30)
 
-    button_customer_manager = Button(window_main, text="Customer Manager", command=lambda:create_customer_manager_form(cursor,db,id_user))
+    button_customer_manager = Button(window_main, text="Quản lý khách hàng", command=lambda:create_customer_manager_form(cursor,db,id_user))
     button_customer_manager.place(x=30, y=350, width=200, height=30)
 
-    button_log_out = Button(window_main, text="Log out", command=lambda: log_out(window_main))
+    button_log_out = Button(window_main, text="Đăng xuất", command=lambda: log_out(window_main))
     button_log_out.place(x=30, y=400, width=200, height=30)
 
     canvas = Canvas(window_main)
@@ -183,7 +183,7 @@ def login(cursor, window_login, entr_login_name, entr_login_pass):
         show_home_page(window_login,cursor)
     else:
         # If login fails, show an error message
-        messagebox.showerror("Login Failed", "Invalid email or password")
+        messagebox.showerror("Đăng nhập thất bại", "Email hoặc mật khẩu không chính xác")
 # Sign In
 def sign_up(cursor,entr_sign_up_name, entr_sign_up_phone, gender_var,entr_sign_up_pass,entry_sign_up_pass_repet):
     name = entr_sign_up_name.get()
@@ -194,13 +194,13 @@ def sign_up(cursor,entr_sign_up_name, entr_sign_up_phone, gender_var,entr_sign_u
     password_repeat = entry_sign_up_pass_repet.get()
     date_onboard = datetime.now().strftime('%Y-%m-%d')
     if password != password_repeat:
-        messagebox.showwarning("","Password is not match")
+        messagebox.showwarning("","Mật khẩu không khớp")
 
     cursor.execute("SELECT * FROM Employee WHERE PhoneNumber = %s", (phone_number,))
     existing_employee = cursor.fetchone()
 
     if existing_employee:
-        messagebox.showwarning("", "Phone number already exists")
+        messagebox.showwarning("", "Số điện thoại đã tồn tại")
         return
     else:
         cursor.execute("Insert into Employee (Name,PhoneNumber,Gender,DateOnboard,PasswordHas,Role, Status) values "

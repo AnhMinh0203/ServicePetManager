@@ -69,7 +69,7 @@ def add_bill(cursor, bill, tree, window_bill_ad, db):
                    "values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                    (bill.name, bill.type,bill.supplier, bill.sold, bill.amount, bill.price, bill.create_by, bill.create_date,bill.modify_by,bill.create_date))
     db.commit()
-    messagebox.showinfo("Success", "Bill added successfully")
+    messagebox.showinfo("Thành công", "Thêm hóa đơn thành công")
     window_bill_ad.destroy()
     refresh_treeview(tree, cursor)
 def update_bill(cursor,bill,tree,window_bill_ad,id,db):
@@ -94,7 +94,7 @@ def update_bill(cursor,bill,tree,window_bill_ad,id,db):
             WHERE Id = %s
         """, (name, IdType,IdSupplier, sold, amount, price, modify_by, modify_date, id))
     db.commit()
-    messagebox.showinfo("Success", "Bill added successfully")
+    messagebox.showinfo("Thành công", "Thêm hóa đơn thành công")
     window_bill_ad.destroy()
     refresh_treeview(tree,cursor)
 
@@ -170,23 +170,30 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
         modify_by = id_user
         modify_date = datetime.today().strftime('%Y-%m-%d')
 
+        cursor.execute("SELECT COUNT(*) FROM Customers WHERE PhoneNumber = %s", (phone,))
+        phone_count = cursor.fetchone()[0]
+
+        if phone_count > 0:
+            messagebox.showerror("Lỗi", f"Số điện thoại đã tồn tại.")
+            return
+
         args = [name,phone,address,dateOfBirth,gender,create_by,create_date,modify_by,modify_date]
         cursor.callproc("addCustomer",args)
         for result in cursor.stored_results():
             result.fetchone()
         db.commit()
-        messagebox.showinfo("","Add customer successfully !")
+        messagebox.showinfo("","Thêm khách hàng thành công!")
 
     def add_product_to_bill():
         global onchange_id_proc, total_price, price_for_each_item
         quantity_text = entr_quantity.get().strip()
         if not quantity_text:
-            messagebox.showwarning("Warning","Quantity cannot be empty !")
+            messagebox.showwarning("Cảnh báo","Số lượng không được để trống !")
             return
         quantity = int(quantity_text)
         total_price += (float(price_for_each_item) * quantity)
         products.append((onchange_id_proc,quantity,float(price_for_each_item) * quantity))
-        messagebox.showinfo("","Add product successfully")
+        messagebox.showinfo("","Thêm sản phẩm thành công")
 
     def add_service_to_bill():
         global  onchange_id_servic, price_for_each_service, total_price
@@ -196,9 +203,9 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
         if service_to_add not in services:
             services.append(service_to_add)
             total_price += (float(price_for_each_service))
-            messagebox.showinfo("", "Add Service successfully")
+            messagebox.showinfo("", "Thêm dịch vụ thành công")
         else:
-            messagebox.showinfo("", "Service already exists")
+            messagebox.showinfo("", "Dịch vụ đã tồn tại")
 
     def getCustomer ():
         phone_number = entry_search_cus.get().strip()
@@ -217,7 +224,7 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
                 dob.config(text=dob_str)
                 gender_var.set(row[5])
             else:
-                messagebox.showwarning("Warning", "Customer is not exist")
+                messagebox.showwarning("Cảnh báo", "Khách hàng không tồn tại")
 
     def save_bill():
         global total_price
@@ -231,7 +238,7 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
             if id_cus:
                 id_cus = id_cus[0]
             else:
-                messagebox.showerror("Error", "Customer not found")
+                messagebox.showerror("Lỗi", "Không tìm thấy khách hàng")
                 return
 
             # Insert into Bill table
@@ -263,7 +270,7 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
 
         except Exception as e:
             db.rollback()
-            messagebox.showerror("Error", f"Error saving bill: {str(e)}")
+            messagebox.showerror("Lỗi", f"Lỗi lưu hóa đơn: {str(e)}")
     #       còn cái này bây giơ
 
 
@@ -311,21 +318,21 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
     entry_search_cus = Entry(window_bill_add)
     entry_search_cus.place(x=20, y=20, width=330, height=30)
 
-    button_search_cus = Button(window_bill_add,text="Search",command=getCustomer)
+    button_search_cus = Button(window_bill_add,text="Tìm kiếm",command=getCustomer)
     button_search_cus.place(x=360, y=20, width=100, height=30)
     # Name
-    label_name_cus = Label(window_bill_add,text="Name customer")
+    label_name_cus = Label(window_bill_add,text="Tên khách hàng")
     label_name_cus.place(x=20,y=60,width=100, height=30)
     entry_name_cus = Entry(window_bill_add)
     entry_name_cus.place(x=20,y=100,width=200, height=30)
     # Phone
-    label_phone_cus = Label(window_bill_add, text="Phone number")
+    label_phone_cus = Label(window_bill_add, text="Số điện thoại")
     label_phone_cus.place(x=270, y=60, width=100, height=30)
     entry_phone_cus = Entry(window_bill_add)
     entry_phone_cus.place(x=270, y=100, width=200, height=30)
 
     # Address
-    label_address_cus = Label(window_bill_add, text="Address")
+    label_address_cus = Label(window_bill_add, text="Địa chỉ")
     label_address_cus.place(x=20, y=140, width=100, height=30)
     entry_address_cus = Entry(window_bill_add)
     entry_address_cus.place(x=20, y=180, width=450, height=30)
@@ -340,7 +347,7 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
     cal = Calendar(window_bill_add, selectmode='day', year=2020, month=5, day=22)
 
     #Employeee
-    label_Emplo = Label(window_bill_add,text="Select Employee: ")
+    label_Emplo = Label(window_bill_add,text="Chọn nhân viên: ")
     label_Emplo.place(x=20, y=260, width=100, height=30)
 
     employee_var = StringVar(window_bill_add)
@@ -357,7 +364,7 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
             cal.place(x=270, y=260)
             cal.tkraise()
 
-    dob = Button(window_bill_add, text="Date of birth", command=toggle_calendar)
+    dob = Button(window_bill_add, text="Ngày sinh", command=toggle_calendar)
     dob.place(x=270, y=220, width=80, height=30)
 
     cal = Calendar(window_bill_add, selectmode='day', year=2020, month=5, day=22)
@@ -371,7 +378,7 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
     cal.bind("<<CalendarSelected>>", on_date_select)
 
     # Add customer
-    button_add_customer = Button(window_bill_add, text="Add Customer", command=add_customer_to_bill)
+    button_add_customer = Button(window_bill_add, text="Thêm khách hàng", command=add_customer_to_bill)
     button_add_customer.place(x=530, y=100, width=100, height=30)
 
 
@@ -393,12 +400,12 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
             tree.insert("","end",values=row)
     tree.bind("<<TreeviewSelect>>", on_tree_product_select)
 
-    label_quantity = Label(window_bill_add, text="Quantity")
+    label_quantity = Label(window_bill_add, text="Số lượng")
     label_quantity.place(x=530, y=300, width=50, height=30)
     entr_quantity = Entry(window_bill_add)
     entr_quantity.place(x=530, y=340, width=100, height=30)
 
-    button_add_product = Button(window_bill_add, text="Add Product",command=add_product_to_bill)
+    button_add_product = Button(window_bill_add, text="Thêm sản phẩm",command=add_product_to_bill)
     button_add_product.place(x=530, y=380, width=100, height=30)
 
     #Service
@@ -419,11 +426,11 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
             treeService.insert("", "end", values=row)
     treeService.bind("<<TreeviewSelect>>", on_treeService_product_select)
 
-    button_add_product = Button(window_bill_add, text="Add Service", command=add_service_to_bill)
+    button_add_product = Button(window_bill_add, text="Thêm dịch vụ", command=add_service_to_bill)
     button_add_product.place(x=530, y=640, width=100, height=30)
 
     # Add bill
-    button_save_bill = Button(window_bill_add, text="Save Bill",command=save_bill)
+    button_save_bill = Button(window_bill_add, text="Lưu hóa đơn",command=save_bill)
     button_save_bill.place(x=530, y=450, width=100, height=30)
     window_bill_add.mainloop()
 def create_bill_detail_form(cursor,id_bill):
@@ -446,7 +453,7 @@ def create_bill_detail_form(cursor,id_bill):
     window_bill_mg.geometry(f"400x400+{position_x}+{position_y}")
 
     # Heading
-    heading_bill_mg = Label(window_bill_mg, text="Bill Detail", font=("Helvetica", 20, "bold"), fg="green")
+    heading_bill_mg = Label(window_bill_mg, text="Chi tiết hóa đơn", font=("Helvetica", 20, "bold"), fg="green")
     heading_bill_mg.place(x=20, y=30, width=400, height=30)
 
     # Tree view
@@ -493,10 +500,10 @@ def create_manager_type_form(cursor, db):
             result = cursor.fetchone()
 
             if result[0] > 0:
-                messagebox.showwarning("", "Type already exists")
+                messagebox.showwarning("", "Loại sản phẩm đã tồn tại")
             else:
                 cursor.execute("Insert into Type (name) values (%s)",(name_type,))
-                messagebox.showinfo("","Add successfully")
+                messagebox.showinfo("","Thêm thành công")
                 db.commit()
 
                 window_bill_type.destroy()
@@ -512,13 +519,13 @@ def create_manager_type_form(cursor, db):
         position_y = int((screen_height / 3) - (400 / 2))
         window_bill_type.geometry(f"200x200+{position_x}+{position_y}")
 
-        label_bill_type = Label(window_bill_type, text="Name type")
+        label_bill_type = Label(window_bill_type, text="Tên loại sản phẩm")
         label_bill_type.place(x=20, y=20, width=80, height=30)
 
         entry_bill_type = Entry(window_bill_type)
         entry_bill_type.place(x=20, y=50, width=160, height=30)
 
-        button_save_type = Button(window_bill_type,text="Save",command=add_type)
+        button_save_type = Button(window_bill_type,text="Lưu",command=add_type)
         button_save_type.place(x=120, y=80, width=60, height=30)
         refresh_treeview_type(tree, cursor)
         window_bill_type.mainloop()
@@ -533,7 +540,7 @@ def create_manager_type_form(cursor, db):
             cursor.execute("delete from Type where id =(%s)", (selected_id,))
             db.commit()
             refresh_treeview_type(tree, cursor,"Manager Type")
-            messagebox.showinfo("Delete alert", "Delete successfully !")
+            messagebox.showinfo("Xóa", "Xóa thành cng !")
 
 
 
@@ -568,23 +575,23 @@ def create_manager_type_form(cursor, db):
     tree.place(x=20, y=100, width=360, height=200)
     refresh_treeview_type(tree, cursor)
 
-    button_add_type = Button(window_bill_type,text="Add",command=create_add_type_form)
+    button_add_type = Button(window_bill_type,text="Thêm",command=create_add_type_form)
     button_add_type.place(x=320, y=320, width=50, height=30)
-    button_delete_type = Button(window_bill_type, text="Delete", command=delete_type)
+    button_delete_type = Button(window_bill_type, text="Xóa", command=delete_type)
     button_delete_type.place(x=240,y=320,width=50, height=30)
 
     tree.bind("<<TreeviewSelect>>", on_tree_select)
     window_bill_type.mainloop()
 
 def delete_bill(cursor,id_bill,tree,db):
-    ask = messagebox.askyesno("Confirm delete","Do you want to delete this bill ?")
+    ask = messagebox.askyesno("Xác nhận xóa","Bạn có muốn xóa hóa đơn này không?")
     if ask:
         cursor.callproc("deleteBill",[id_bill])
         for result in cursor.stored_results():
             result.fetchone()
         db.commit()
         refresh_treeview_bill(tree,cursor)
-        messagebox.showinfo("Delete alert","Delete successfully !")
+        messagebox.showinfo("Xóa","Xóa thành công !")
     else:
         return
 def create_bill_manager_form(cursor,db,id_user):
@@ -638,18 +645,18 @@ def create_bill_manager_form(cursor,db,id_user):
     entr_search = Entry(window_bill_mg)
     entr_search.place(x=400, y=80, width=300, height=30)
 
-    button_bill_manager = Button(window_bill_mg, text="Search", command=lambda: Search(cursor, entr_search, tree_manager))
+    button_bill_manager = Button(window_bill_mg, text="Tìm kiếm", command=lambda: Search(cursor, entr_search, tree_manager))
     button_bill_manager.place(x=720, y=80, width=80, height=30)
 
-    button_bill_manager = Button(window_bill_mg, text="Add",
+    button_bill_manager = Button(window_bill_mg, text="Thêm",
                                  command=lambda: create_bill_add_form(cursor, id_user, db, tree_manager))
     button_bill_manager.place(x=520, y=450, width=80, height=30)
 
-    button_bill_manager = Button(window_bill_mg, text="Detail",
+    button_bill_manager = Button(window_bill_mg, text="Chi tiết",
                                  command=lambda: create_bill_detail_form(cursor, selected_id))
     button_bill_manager.place(x=620, y=450, width=80, height=30)
 
-    button_bill_manager = Button(window_bill_mg, text="Delete",
+    button_bill_manager = Button(window_bill_mg, text="Xóa",
                                  command=lambda: delete_bill(cursor, selected_id, tree_manager, db))
     button_bill_manager.place(x=720, y=450, width=80, height=30)
 

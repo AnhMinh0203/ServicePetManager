@@ -45,13 +45,13 @@ def create_service_add_form(cursor,tree,db,id_user):
         modify_by = id_user
 
         if not price_str:
-            messagebox.showerror("Error", "Price cannot be empty")
+            messagebox.showerror("Lỗi", "Giá không thể để trống")
             return
 
         try:
             price = float(price_str)
         except ValueError:
-            messagebox.showerror("Error", "Price must be a valid number")
+            messagebox.showerror("Lỗi", "Giá phải là một con số hợp lệ")
             return
 
         service = Service(name, price, description,create_by,modify_by)
@@ -68,25 +68,25 @@ def create_service_add_form(cursor,tree,db,id_user):
     position_y = int((screen_height / 3) - (400 / 2))
     window_service_ad.geometry(f"300x400+{position_x}+{position_y}")
 
-    lable_service_name = Label(window_service_ad, text="Name")
+    lable_service_name = Label(window_service_ad, text="Tên")
     lable_service_name.place(x=20, y=50, width=80, height=30)
 
     entr_service_name = Entry(window_service_ad)
     entr_service_name.place(x=100, y=50, width=150, height=30)
 
-    label_service_price = Label(window_service_ad, text="Price")
+    label_service_price = Label(window_service_ad, text="Giá")
     label_service_price.place(x=20, y=100, width=80, height=30)
 
     entry_service_price = Entry(window_service_ad)
     entry_service_price.place(x=100, y=100, width=150, height=30)
 
-    label_service_desc = Label(window_service_ad,text="Description")
+    label_service_desc = Label(window_service_ad,text="Mô tả")
     label_service_desc.place(x=20, y=200, width=100,height=30)
 
     entry_service_desc = Entry(window_service_ad)
     entry_service_desc.place(x=100, y=150,width=150, height=90)
 
-    button_service_add = Button(window_service_ad,text="Add",command=lambda:add_service_action())
+    button_service_add = Button(window_service_ad,text="Thêm",command=lambda:add_service_action())
     button_service_add.place(x=150, y=300,width=100, height=30)
     window_service_ad.mainloop()
 
@@ -106,7 +106,7 @@ def update_service(cursor,service,tree,window_service_ad,id,db):
             WHERE Id = %s
         """, (name,  price, desc,modify_by, modify_date, id))
     db.commit()
-    messagebox.showinfo("Success", "Service added successfully")
+    messagebox.showinfo("Thành công", "Thêm dịch vụ thành công")
     window_service_ad.destroy()
     refresh_treeview(tree,cursor)
 
@@ -133,26 +133,26 @@ def create_service_update_form(cursor,tree,id_service,db,id_user):
     position_y = int((screen_height / 3) - (400 / 2))
     window_service_ad.geometry(f"300x400+{position_x}+{position_y}")
 
-    lable_service_name = Label(window_service_ad, text="Name")
+    lable_service_name = Label(window_service_ad, text="Tên")
     lable_service_name.place(x=20, y=50, width=80, height=30)
 
     entr_service_name = Entry(window_service_ad)
     entr_service_name.place(x=100, y=50, width=150, height=30)
 
-    label_service_price = Label(window_service_ad, text="Price")
+    label_service_price = Label(window_service_ad, text="Giá")
     label_service_price.place(x=20, y=100, width=80, height=30)
 
     entry_service_price = Entry(window_service_ad)
     entry_service_price.place(x=100, y=100, width=150, height=30)
 
-    label_service_desc = Label(window_service_ad, text="Description")
+    label_service_desc = Label(window_service_ad, text="Mô tả")
     label_service_desc.place(x=20, y=200, width=100, height=30)
 
     entry_service_desc = Entry(window_service_ad)
     entry_service_desc.place(x=100, y=150, width=150, height=90)
 
 
-    button_service_add = Button(window_service_ad, text="Update", command=lambda: update_service_action())
+    button_service_add = Button(window_service_ad, text="Sửa", command=lambda: update_service_action())
     button_service_add.place(x=150, y=300, width=100, height=30)
 
     name,price, desc = detail_service(cursor,id_service)
@@ -162,12 +162,12 @@ def create_service_update_form(cursor,tree,id_service,db,id_user):
     window_service_ad.mainloop()
 
 def delete_service(cursor,id_service,tree,db):
-    ask = messagebox.askyesno("Confirm delete","Do you want to delete this service ?")
+    ask = messagebox.askyesno("Xác nhận xóa","Bạn có muốn xóa dịch vụ này không ?")
     if ask:
         cursor.execute("UPDATE service SET status = %s WHERE id = %s", (0, id_service))
         db.commit()
         refresh_treeview(tree,cursor)
-        messagebox.showinfo("Delete alert","Delete successfully !")
+        messagebox.showinfo("Xóa","Xóa thành công !")
     else:
         return
 
@@ -213,16 +213,16 @@ def create_service_manager_form(cursor,db,id_user):
     entr_search = Entry(window_service_mg)
     entr_search.place(x=400, y=80, width=300, height=30)
 
-    button_service_manager = Button(window_service_mg, text="Search", command=lambda: search_service(cursor,entr_search,tree))
+    button_service_manager = Button(window_service_mg, text="Tìm kiếm", command=lambda: search_service(cursor,entr_search,tree))
     button_service_manager.place(x=720, y=80, width=80, height=30)
 
-    button_service_manager = Button(window_service_mg, text="Add", command=lambda: create_service_add_form(cursor,tree,db,id_user))
+    button_service_manager = Button(window_service_mg, text="Thêm", command=lambda: create_service_add_form(cursor,tree,db,id_user))
     button_service_manager.place(x=520, y=450, width=80, height=30)
 
-    button_service_manager = Button(window_service_mg, text="Update", command=lambda: create_service_update_form(cursor,tree,selected_id,db,id_user))
+    button_service_manager = Button(window_service_mg, text="Sửa", command=lambda: create_service_update_form(cursor,tree,selected_id,db,id_user))
     button_service_manager.place(x=620, y=450, width=80, height=30)
 
-    button_service_manager = Button(window_service_mg, text="Delete", command=lambda: delete_service(cursor,selected_id,tree,db))
+    button_service_manager = Button(window_service_mg, text="Xóa", command=lambda: delete_service(cursor,selected_id,tree,db))
     button_service_manager.place(x=720, y=450, width=80, height=30)
     # Tree view
     columns = ("ID","Name", "Price", "Description","CreateDate","CreateBy","ModifyDate","ModifyBy")

@@ -29,7 +29,7 @@ def add_customer(cursor,customer,tree,window_customer_ad,db):
                    (customer.name,customer.phone_number,customer.address,customer.dob,customer.gender,
                     customer.create_by,customer.create_date,customer.modify_by,customer.modify_date, 1))
     db.commit()
-    messagebox.showinfo("Success", "Add successfully")
+    messagebox.showinfo("Thành công", "Thêm thành công")
     window_customer_ad.destroy()
     refresh_treeview(tree,cursor)
 
@@ -40,7 +40,7 @@ def update_customer (cursor,customer,tree,window_customer_ad,db,id_emp):
         (customer.name, customer.phone_number, customer.address, customer.dob, customer.gender, customer.modify_by,
          customer.modify_date, id_emp))
     db.commit()
-    messagebox.showinfo("Success", "Update successfully")
+    messagebox.showinfo("Thành công", "Sửa thành công")
     window_customer_ad.destroy()
     refresh_treeview(tree, cursor)
 
@@ -56,7 +56,24 @@ def create_customer_add_form(cursor,tree,db,id_user):
         modify_by = id_user
         modify_date = datetime.now().strftime('%Y-%m-%d')
 
-        customer = Customer(name, phone,address, dateOfBirth,gender, create_by,modify_by, modify_date)
+        try:
+            dob_date = datetime.strptime(dateOfBirth, '%m/%d/%y')
+            formatted_dob = dob_date.strftime('%Y-%m-%d')
+        except ValueError:
+            messagebox.showerror("Lỗi", "Định dạng ngày không hợp lệ")
+            return
+
+        cursor.execute("SELECT PhoneNumber FROM Customers WHERE PhoneNumber = %s", (phone,))
+        existing_phone = cursor.fetchone()
+
+        # Đọc hết kết quả từ truy vấn trước
+        cursor.fetchall()
+
+        if existing_phone:
+            messagebox.showerror("Lỗi", f"Số điện thoại đã tồn tại.")
+            return
+
+        customer = Customer(name, phone, address, formatted_dob, gender, create_by, modify_by, modify_date)
         add_customer(cursor, customer, tree, window_customer_ad, db)
 
     window_customer_ad = Tk()
@@ -70,19 +87,19 @@ def create_customer_add_form(cursor,tree,db,id_user):
     position_y = int((screen_height / 3) - (400 / 2))
     window_customer_ad.geometry(f"400x600+{position_x}+{position_y}")
 
-    lable_customer_name = Label(window_customer_ad, text="Name")
+    lable_customer_name = Label(window_customer_ad, text="Tên")
     lable_customer_name.place(x=20, y=50, width=50, height=30)
 
     entr_customer_name = Entry(window_customer_ad)
     entr_customer_name.place(x=20, y=80, width=350, height=30)
 
-    label_customer_phone = Label(window_customer_ad,text="Phone number")
+    label_customer_phone = Label(window_customer_ad,text="Số điện thoại")
     label_customer_phone.place(x=20, y=110, width=100, height=30)
 
     entry_customer_phone = Entry(window_customer_ad)
     entry_customer_phone.place(x=20, y=140, width=350, height=30)
 
-    lable_customer_password = Label(window_customer_ad, text="Address")
+    lable_customer_password = Label(window_customer_ad, text="Địa chỉ")
     lable_customer_password.place(x=20, y=170, width=50, height=30)
 
     entr_customer_address = Entry(window_customer_ad)
@@ -103,7 +120,7 @@ def create_customer_add_form(cursor,tree,db,id_user):
             cal.place(x=140, y=260)
             cal.tkraise()
 
-    dob = Button(window_customer_ad, text="Date of birth", command=toggle_calendar)
+    dob = Button(window_customer_ad, text="Ngày sinh", command=toggle_calendar)
     dob.place(x=140, y=250, width=150, height=30)
 
     cal = Calendar(window_customer_ad, selectmode='day', year=2020, month=5, day=22)
@@ -116,7 +133,7 @@ def create_customer_add_form(cursor,tree,db,id_user):
     # Bind the function to the calendar's date selection event
     cal.bind("<<CalendarSelected>>", on_date_select)
 
-    add_customer_button = Button(window_customer_ad, text="Save", command=add_customer_action)
+    add_customer_button = Button(window_customer_ad, text="Lưu", command=add_customer_action)
     add_customer_button.place(x=260, y=350, width=100, height=30)
     window_customer_ad.mainloop()
 def detail_customer(cursor,id):
@@ -157,19 +174,19 @@ def create_customer_update_form(cursor, tree, id_emp, db,id_user):
     position_y = int((screen_height / 3) - (400 / 2))
     window_customer_ad.geometry(f"400x600+{position_x}+{position_y}")
 
-    lable_customer_name = Label(window_customer_ad, text="Name")
+    lable_customer_name = Label(window_customer_ad, text="Tên")
     lable_customer_name.place(x=20, y=50, width=50, height=30)
 
     entr_customer_name = Entry(window_customer_ad)
     entr_customer_name.place(x=20, y=80, width=350, height=30)
 
-    label_customer_phone = Label(window_customer_ad, text="Phone number")
+    label_customer_phone = Label(window_customer_ad, text="Số điện thoại")
     label_customer_phone.place(x=20, y=110, width=100, height=30)
 
     entry_customer_phone = Entry(window_customer_ad)
     entry_customer_phone.place(x=20, y=140, width=350, height=30)
 
-    lable_customer_password = Label(window_customer_ad, text="Address")
+    lable_customer_password = Label(window_customer_ad, text="Địa chỉ")
     lable_customer_password.place(x=20, y=170, width=50, height=30)
 
     entr_customer_address = Entry(window_customer_ad)
@@ -190,20 +207,20 @@ def create_customer_update_form(cursor, tree, id_emp, db,id_user):
             cal.place(x=140, y=260)
             cal.tkraise()
 
-    dob = Button(window_customer_ad, text="Date of birth", command=toggle_calendar)
+    dob = Button(window_customer_ad, text="Ngày sinh", command=toggle_calendar)
     dob.place(x=140, y=250, width=150, height=30)
 
     cal = Calendar(window_customer_ad, selectmode='day', year=2020, month=5, day=22)
 
     def on_date_select(event):
-        selected_date = cal.get_date()
-        dob.config(text=selected_date)
+        selected_date = cal.get_date().strftime('%Y-%m-%d')  # Lấy ngày theo định dạng YYYY-MM-DD
+        dob.config(text=selected_date)  # Cập nhật văn bản nút với ngày đã định dạng
         cal.place_forget()
 
     # Bind the function to the calendar's date selection event
     cal.bind("<<CalendarSelected>>", on_date_select)
 
-    add_customer_button = Button(window_customer_ad, text="Save", command=update_customer_action)
+    add_customer_button = Button(window_customer_ad, text="Lưu", command=update_customer_action)
     add_customer_button.place(x=260, y=300, width=100, height=30)
 
 
@@ -216,13 +233,13 @@ def create_customer_update_form(cursor, tree, id_emp, db,id_user):
     window_customer_ad.mainloop()
 
 def delete_customer(cursor,id_product,tree,db):
-    ask = messagebox.askyesno("Confirm delete","Do you want to delete this customer ?")
+    ask = messagebox.askyesno("Xóa","Bạn có muốn xóa khách hàng này không ?")
     if ask:
         cursor.execute("Update bill set IdCustomer = NULL where IdCustomer = %s", (id_product,))
         cursor.execute("UPDATE customers SET Status = 0 WHERE id = %s", (id_product,))
         db.commit()
         refresh_treeview(tree,cursor)
-        messagebox.showinfo("Delete alert","Delete successfully !")
+        messagebox.showinfo("Xóa","Xóa thành công !")
     else:
         return
 
@@ -261,17 +278,17 @@ def create_customer_manager_form(cursor,db,id_user):
     entr_search = Entry(window_customer_mg)
     entr_search.place(x=400, y=80, width=300, height=30)
 
-    button_customer_manager = Button(window_customer_mg, text="Search", command=lambda: search_customer(cursor,entr_search,tree))
+    button_customer_manager = Button(window_customer_mg, text="Tìm kiếm", command=lambda: search_customer(cursor,entr_search,tree))
     button_customer_manager.place(x=720, y=80, width=80, height=30)
 
     # Add, Update, Delete buttons
-    button_customer_manager = Button(window_customer_mg, text="Add", command=lambda: create_customer_add_form(cursor,tree,db,id_user))
+    button_customer_manager = Button(window_customer_mg, text="Thêm", command=lambda: create_customer_add_form(cursor,tree,db,id_user))
     button_customer_manager.place(x=520, y=450, width=80, height=30)
 
-    button_customer_manager = Button(window_customer_mg, text="Update", command=lambda: create_customer_update_form(cursor,tree,selected_id,db,id_user))
+    button_customer_manager = Button(window_customer_mg, text="Sửa", command=lambda: create_customer_update_form(cursor,tree,selected_id,db,id_user))
     button_customer_manager.place(x=620, y=450, width=80, height=30)
 
-    button_customer_manager = Button(window_customer_mg, text="Delete", command=lambda: delete_customer(cursor,selected_id,tree,db))
+    button_customer_manager = Button(window_customer_mg, text="Xóa", command=lambda: delete_customer(cursor,selected_id,tree,db))
     button_customer_manager.place(x=720, y=450, width=80, height=30)
     # Tree view
     columns = ("ID","Name", "PhoneNumber", "Address", "DateOfBirth", "Gender","CreateBy","CreateDate","ModifyBy","ModifyDate")

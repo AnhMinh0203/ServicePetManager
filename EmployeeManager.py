@@ -27,7 +27,7 @@ def add_employee(cursor,employee,tree,window_employee_ad,db):
                    (employee.name,employee.phone_number,employee.gender,employee.date_onboard,employee.password_hash,employee.role,
                     employee.create_date,employee.create_by,employee.modify_date,employee.modify_by, 1))
     db.commit()
-    messagebox.showinfo("Success", "Add successfully")
+    messagebox.showinfo("Thành công", "Thêm thành công")
     window_employee_ad.destroy()
     refresh_treeview(tree,cursor)
 
@@ -36,7 +36,7 @@ def update_employee (cursor,employee,tree,window_employee_ad,db,id_emp):
         "Update Employee set Name = %s,PhoneNumber = %s, Gender = %s,PasswordHas = %s  WHERE Id = %s ",
         (employee.name, employee.phone_number, employee.gender, employee.password_hash,id_emp))
     db.commit()
-    messagebox.showinfo("Success", "Update successfully")
+    messagebox.showinfo("Thành công", "Sửa thành công")
     window_employee_ad.destroy()
     refresh_treeview(tree, cursor)
 
@@ -53,7 +53,7 @@ def create_employee_add_form(cursor,tree,db,id_user):
         modify_by = id_user
 
         if password != password_repeat:
-            messagebox.showerror("Warning","Password does not match")
+            messagebox.showerror("Cảnh báo","Mât khẩu không khớp")
         else:
             employee = Employee(name, phone, gender, date_onboard, password,1,create_by,modify_by)
             add_employee(cursor, employee, tree, window_employee_ad, db)
@@ -69,25 +69,25 @@ def create_employee_add_form(cursor,tree,db,id_user):
     position_y = int((screen_height / 3) - (400 / 2))
     window_employee_ad.geometry(f"400x600+{position_x}+{position_y}")
 
-    lable_employee_name = Label(window_employee_ad, text="Name")
+    lable_employee_name = Label(window_employee_ad, text="Tên")
     lable_employee_name.place(x=20, y=50, width=50, height=30)
 
     entr_employee_name = Entry(window_employee_ad)
     entr_employee_name.place(x=20, y=80, width=350, height=30)
 
-    label_employee_phone = Label(window_employee_ad,text="Phone number")
+    label_employee_phone = Label(window_employee_ad,text="Số điện thoại")
     label_employee_phone.place(x=20, y=110, width=100, height=30)
 
     entry_employee_phone = Entry(window_employee_ad)
     entry_employee_phone.place(x=20, y=140, width=350, height=30)
 
-    lable_employee_password = Label(window_employee_ad, text="Password")
+    lable_employee_password = Label(window_employee_ad, text="Mật khẩu")
     lable_employee_password.place(x=20, y=170, width=50, height=30)
 
     entr_employee_password = Entry(window_employee_ad, show="*")
     entr_employee_password.place(x=20, y=200, width=350, height=30)
 
-    lable_employee_password_repeat = Label(window_employee_ad, text="Repeat password")
+    lable_employee_password_repeat = Label(window_employee_ad, text="Nhập lại mật khẩu")
     lable_employee_password_repeat.place(x=20, y=240, width=100, height=30)
 
     entr_employee_password_repeat = Entry(window_employee_ad, show="*")
@@ -120,7 +120,7 @@ def create_employee_add_form(cursor,tree,db,id_user):
     # # Bind the function to the calendar's date selection event
     # cal.bind("<<CalendarSelected>>", on_date_select)
 
-    add_employee_button = Button(window_employee_ad, text="Save", command=add_employee_action)
+    add_employee_button = Button(window_employee_ad, text="Lưu", command=add_employee_action)
     add_employee_button.place(x=140, y=350, width=100, height=30)
     window_employee_ad.mainloop()
 def detail_employee(cursor,id):
@@ -146,7 +146,7 @@ def create_employee_update_form(cursor, tree, id_emp, db,id_user):
         modify_by = id_user
 
         if password != password_repeat:
-            messagebox.showerror("Warning", "Password does not match")
+            messagebox.showerror("Cảnh báo", "Mật khẩu không khớp")
         else:
             employee = Employee(name, phone, gender, date_onboard, password, 1, None, modify_by)
             update_employee(cursor, employee, tree, window_employee_ad, db,id_emp)
@@ -162,25 +162,25 @@ def create_employee_update_form(cursor, tree, id_emp, db,id_user):
     position_y = int((screen_height / 3) - (400 / 2))
     window_employee_ad.geometry(f"400x600+{position_x}+{position_y}")
 
-    lable_employee_name = Label(window_employee_ad, text="Name")
+    lable_employee_name = Label(window_employee_ad, text="Tên")
     lable_employee_name.place(x=20, y=50, width=50, height=30)
 
     entr_employee_name = Entry(window_employee_ad)
     entr_employee_name.place(x=20, y=80, width=350, height=30)
 
-    label_employee_phone = Label(window_employee_ad, text="Phone number")
+    label_employee_phone = Label(window_employee_ad, text="Số điện thoại")
     label_employee_phone.place(x=20, y=110, width=100, height=30)
 
     entry_employee_phone = Entry(window_employee_ad)
     entry_employee_phone.place(x=20, y=140, width=350, height=30)
 
-    lable_employee_password = Label(window_employee_ad, text="Password")
+    lable_employee_password = Label(window_employee_ad, text="Mật khẩu")
     lable_employee_password.place(x=20, y=170, width=50, height=30)
 
     entr_employee_password = Entry(window_employee_ad)
     entr_employee_password.place(x=20, y=200, width=350, height=30)
 
-    lable_employee_password_repeat = Label(window_employee_ad, text="Repeat password")
+    lable_employee_password_repeat = Label(window_employee_ad, text="Nhập lại mật khẩu")
     lable_employee_password_repeat.place(x=20, y=240, width=100, height=30)
 
     entr_employee_password_repeat = Entry(window_employee_ad)
@@ -192,7 +192,7 @@ def create_employee_update_form(cursor, tree, id_emp, db,id_user):
     gender_menu = OptionMenu(window_employee_ad, gender_var, "Nam", "Nữ")
     gender_menu.place(x=20, y=320, width=80, height=30)
 
-    add_employee_button = Button(window_employee_ad, text="Save", command=update_employee_action)
+    add_employee_button = Button(window_employee_ad, text="Lưu", command=update_employee_action)
     add_employee_button.place(x=140, y=350, width=100, height=30)
 
     name,phone,gender,password =  detail_employee(cursor,id_emp)
@@ -204,13 +204,13 @@ def create_employee_update_form(cursor, tree, id_emp, db,id_user):
     window_employee_ad.mainloop()
 
 def delete_employee(cursor,id_product,tree,db):
-    ask = messagebox.askyesno("Confirm delete","Do you want to delete this employee ?")
+    ask = messagebox.askyesno("Xác nhận xóa","Bạn có muốn xóa nhân viên này không ?")
     if ask:
         cursor.execute("Update bill set IdEmployee = NULL where IdEmployee = %s", (id_product,))
         cursor.execute("UPDATE employee SET status = 0 WHERE id = %s", (id_product,))
         db.commit()
         refresh_treeview(tree,cursor)
-        messagebox.showinfo("Delete alert","Delete successfully !")
+        messagebox.showinfo("Xóa","Xóa thành công !")
     else:
         return
 
@@ -249,17 +249,17 @@ def create_employee_manager_form(cursor,db,id_user):
     entr_search = Entry(window_employee_mg)
     entr_search.place(x=400, y=80, width=300, height=30)
 
-    button_employee_manager = Button(window_employee_mg, text="Search", command=lambda: search_employee(cursor,entr_search,tree))
+    button_employee_manager = Button(window_employee_mg, text="Tìm kiếm", command=lambda: search_employee(cursor,entr_search,tree))
     button_employee_manager.place(x=720, y=80, width=80, height=30)
 
     # Add, Update, Delete buttons
-    button_employee_manager = Button(window_employee_mg, text="Add", command=lambda: create_employee_add_form(cursor,tree,db,id_user))
+    button_employee_manager = Button(window_employee_mg, text="Thêm", command=lambda: create_employee_add_form(cursor,tree,db,id_user))
     button_employee_manager.place(x=520, y=450, width=80, height=30)
 
-    button_employee_manager = Button(window_employee_mg, text="Update", command=lambda: create_employee_update_form(cursor,tree,selected_id,db,id_user))
+    button_employee_manager = Button(window_employee_mg, text="Sửa", command=lambda: create_employee_update_form(cursor,tree,selected_id,db,id_user))
     button_employee_manager.place(x=620, y=450, width=80, height=30)
 
-    button_employee_manager = Button(window_employee_mg, text="Delete", command=lambda: delete_employee(cursor,selected_id,tree,db))
+    button_employee_manager = Button(window_employee_mg, text="Xóa", command=lambda: delete_employee(cursor,selected_id,tree,db))
     button_employee_manager.place(x=720, y=450, width=80, height=30)
     # Tree view
     columns = ("ID","Name", "PhoneNumber", "Gender", "DateOnboard", "Password","Role","CreateBy","CreateDate","ModifyBy","ModifyDate")
