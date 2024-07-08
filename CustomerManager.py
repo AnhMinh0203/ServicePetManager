@@ -100,11 +100,11 @@ def create_customer_add_form(cursor,tree,db,id_user):
         if cal.winfo_ismapped():
             cal.place_forget()
         else:
-            cal.place(x=270, y=260)
+            cal.place(x=140, y=260)
             cal.tkraise()
 
     dob = Button(window_customer_ad, text="Date of birth", command=toggle_calendar)
-    dob.place(x=290, y=250, width=80, height=30)
+    dob.place(x=140, y=250, width=150, height=30)
 
     cal = Calendar(window_customer_ad, selectmode='day', year=2020, month=5, day=22)
 
@@ -187,11 +187,11 @@ def create_customer_update_form(cursor, tree, id_emp, db,id_user):
         if cal.winfo_ismapped():
             cal.place_forget()
         else:
-            cal.place(x=270, y=260)
+            cal.place(x=140, y=260)
             cal.tkraise()
 
     dob = Button(window_customer_ad, text="Date of birth", command=toggle_calendar)
-    dob.place(x=290, y=250, width=80, height=30)
+    dob.place(x=140, y=250, width=150, height=30)
 
     cal = Calendar(window_customer_ad, selectmode='day', year=2020, month=5, day=22)
 
@@ -218,6 +218,7 @@ def create_customer_update_form(cursor, tree, id_emp, db,id_user):
 def delete_customer(cursor,id_product,tree,db):
     ask = messagebox.askyesno("Confirm delete","Do you want to delete this customer ?")
     if ask:
+        cursor.execute("Update bill set IdCustomer = NULL where IdCustomer = %s", (id_product,))
         cursor.execute("Delete from customers where id = %s",(id_product,))
         db.commit()
         refresh_treeview(tree,cursor)

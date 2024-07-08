@@ -97,11 +97,7 @@ class BillDetails:
 db = mysql.connector.connect(
     host = "localhost",
     user = "root",
-<<<<<<< HEAD
-    password = "provipxop",
-=======
-    password = "020303",
->>>>>>> cd1a4c7d25805926895acdc6692bb63afd073723
+    password = "Abc@123456789",
     database="petmanage"
 )
 cursor = db.cursor()
@@ -123,15 +119,13 @@ def get_username():
 def show_home_page(window_login,cursor):
     window_login.withdraw()
     window_main = Tk()
-    window_main.geometry("800x400")
+    window_main.geometry("800x600")
     window_main.title("Home")
     def on_closing():
         window_main.destroy()
         sys.exit()
     # Set the protocol to call the on_closing function
     window_main.protocol("WM_DELETE_WINDOW", on_closing)
-
-<<<<<<< HEAD
     def update_time():
         current_time = datetime.now().strftime('%H:%M:%S')  # Định dạng thời gian thành HH:MM:SS
         text_time.config(text="Thời gian: " + current_time)
@@ -142,40 +136,38 @@ def show_home_page(window_login,cursor):
     update_time()
 
     user_name = get_username()
-    text_user = Label(window_main, text="UserName: " + user_name)
-    text_user.place(x=620, y=10, width=100, height=30)
-=======
+    text_user = Label(window_main, text="Xin chào: " + user_name)
+    text_user.place(x=550, y=10, width=300, height=30)
     button_service_manager = Button(window_main, text="Service Manager",
                                     command=lambda: create_service_manager_form(cursor, db, id_user))
-    button_service_manager.place(x=30, y=0, width=200, height=30)
->>>>>>> cd1a4c7d25805926895acdc6692bb63afd073723
+    button_service_manager.place(x=30, y=50, width=200, height=30)
 
     button_product_manager = Button(window_main, text="Product Manager", command=lambda: create_product_manager_form(cursor,db,id_user))
-    button_product_manager.place(x=30, y=50, width=200, height=30)
+    button_product_manager.place(x=30, y=100, width=200, height=30)
 
     button_employee_manager = Button(window_main, text="Employee Manager", command=lambda: create_employee_manager_form(cursor,db,id_user))
-    button_employee_manager.place(x=30, y=100, width=200, height=30)
+    button_employee_manager.place(x=30, y=150, width=200, height=30)
 
     button_supplier_manager = Button(window_main, text="Supplier Manager",
                                      command=lambda: create_supplier_manager_form(cursor, db, id_user))
-    button_supplier_manager.place(x=30, y=150, width=200, height=30)
+    button_supplier_manager.place(x=30, y=200, width=200, height=30)
 
     button_report_manager = Button(window_main, text="Report Manager", command=lambda:create_report_manager_form(cursor))
-    button_report_manager.place(x=30, y=200, width=200, height=30)
+    button_report_manager.place(x=30, y=250, width=200, height=30)
 
     button_bill_manager = Button(window_main, text="Bill Manager", command=lambda:create_bill_manager_form(cursor,db,id_user))
-    button_bill_manager.place(x=30, y=250, width=200, height=30)
+    button_bill_manager.place(x=30, y=300, width=200, height=30)
 
     button_customer_manager = Button(window_main, text="Customer Manager", command=lambda:create_customer_manager_form(cursor,db,id_user))
-    button_customer_manager.place(x=30, y=300, width=200, height=30)
+    button_customer_manager.place(x=30, y=350, width=200, height=30)
 
     button_log_out = Button(window_main, text="Log out", command=lambda: log_out(window_main))
-    button_log_out.place(x=30, y=350, width=200, height=30)
+    button_log_out.place(x=30, y=400, width=200, height=30)
 
     canvas = Canvas(window_main)
-    img_home = PhotoImage(master = canvas,file="home.png")
+    img_home = PhotoImage(master = canvas,file="Logo.png")
     label_img_home = Label(window_main, image=img_home)
-    label_img_home.place(x=250, y=50, width=500, height=300)
+    label_img_home.place(x=250, y=30, width=500, height=600)
 
     window_main.mainloop()
 # Login

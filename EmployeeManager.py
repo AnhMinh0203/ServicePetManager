@@ -206,6 +206,7 @@ def create_employee_update_form(cursor, tree, id_emp, db,id_user):
 def delete_employee(cursor,id_product,tree,db):
     ask = messagebox.askyesno("Confirm delete","Do you want to delete this employee ?")
     if ask:
+        cursor.execute("Update bill set IdEmployee = NULL where IdEmployee = %s", (id_product,))
         cursor.execute("Delete from employee where id = %s",(id_product,))
         db.commit()
         refresh_treeview(tree,cursor)

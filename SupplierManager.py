@@ -173,6 +173,7 @@ def create_supplier_update_form(cursor, tree, id_emp, db,id_user):
 def delete_supplier(cursor,id_supplier,tree,db):
     ask = messagebox.askyesno("Confirm delete","Do you want to delete this supplier ?")
     if ask:
+        cursor.execute("Update product set IdSupplier = NULL where  IdSupplier= %s", (id_supplier,))
         cursor.execute("Delete from supplier where id = %s",(id_supplier,))
         db.commit()
         refresh_treeview(tree,cursor)
