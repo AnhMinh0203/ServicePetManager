@@ -45,7 +45,7 @@ def update_customer (cursor,customer,tree,window_customer_ad,db,id_emp):
     refresh_treeview(tree, cursor)
 
 def create_customer_add_form(cursor,tree,db,id_user):
-    from DayStudy.BigExercises.main import Customer
+    from main import Customer
     def add_customer_action():
         name = entr_customer_name.get().strip()
         phone = entry_customer_phone.get().strip()
@@ -133,7 +133,7 @@ def detail_customer(cursor,id):
     else:
         return None
 def create_customer_update_form(cursor, tree, id_emp, db,id_user):
-    from DayStudy.BigExercises.main import Customer
+    from main import Customer
     def update_customer_action():
         name = entr_customer_name.get().strip()
         phone = entry_customer_phone.get().strip()

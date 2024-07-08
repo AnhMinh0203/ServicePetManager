@@ -44,7 +44,7 @@ def update_supplier (cursor,supplier,tree,window_supplier_ad,db,id_emp):
     refresh_treeview(tree, cursor)
 
 def create_supplier_add_form(cursor,tree,db,id_user):
-    from DayStudy.BigExercises.main import Supplier
+    from ServicePetManager.main import Supplier
     def add_supplier_action():
         name = entr_supplier_name.get().strip()
         phone = entry_supplier_phone.get().strip()
@@ -120,7 +120,7 @@ def detail_supplier(cursor,id):
     else:
         return None
 def create_supplier_update_form(cursor, tree, id_emp, db,id_user):
-    from DayStudy.BigExercises.main import Supplier
+    from ServicePetManager.main import Supplier
     day_update = datetime.now().strftime('%Y-%m-%d')
     def update_supplier_action():
         name = entr_supplier_name.get().strip()

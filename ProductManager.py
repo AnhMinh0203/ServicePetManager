@@ -59,7 +59,7 @@ def add_product(cursor, product, tree, window_product_ad, db):
     window_product_ad.destroy()
     refresh_treeview(tree, cursor)
 def create_product_add_form(cursor,tree,db,id_user):
-    from DayStudy.BigExercises.main import Product
+    from main import Product
 
     def get_supplier_id(select_supplier):
         name = select_supplier.get()
@@ -185,7 +185,7 @@ def update_product(cursor,product,tree,window_product_ad,id,db):
     refresh_treeview(tree,cursor)
 
 def create_product_update_form(cursor,tree,id_product,db,id_user):
-    from DayStudy.BigExercises.main import Product
+    from main import Product
 
 
     def get_types(cursor):
