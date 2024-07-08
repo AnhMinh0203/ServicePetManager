@@ -24,10 +24,10 @@ def search_customer(cursor,entr_search,tree):
         tree.insert("","end",values=row)
 def add_customer(cursor,customer,tree,window_customer_ad,db):
     cursor.execute("Insert into Customers "
-                   "(Name,PhoneNumber, Address,DateOfBirth,Gender,CreateBy,CreateDate,ModifyBy,ModifyDate) "
-                   "values (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                   "(Name,PhoneNumber, Address,DateOfBirth,Gender,CreateBy,CreateDate,ModifyBy,ModifyDate,Status) "
+                   "values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                    (customer.name,customer.phone_number,customer.address,customer.dob,customer.gender,
-                    customer.create_by,customer.create_date,customer.modify_by,customer.modify_date))
+                    customer.create_by,customer.create_date,customer.modify_by,customer.modify_date, 1))
     db.commit()
     messagebox.showinfo("Success", "Add successfully")
     window_customer_ad.destroy()

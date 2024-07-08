@@ -24,10 +24,10 @@ def search_employee(cursor,entr_search,tree):
     for row in rows:
         tree.insert("","end",values=row)
 def add_employee(cursor,employee,tree,window_employee_ad,db):
-    cursor.execute("Insert into Employee (Name,PhoneNumber, Gender,DateOnboard,PasswordHas,Role,CreateDate,CreateBy,ModifyDate,ModifiBy) "
-                   "values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+    cursor.execute("Insert into Employee (Name, PhoneNumber, Gender, DateOnboard, PasswordHas, Role, CreateDate, CreateBy, ModifyDate, ModifiBy, Status) "
+                   "values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                    (employee.name,employee.phone_number,employee.gender,employee.date_onboard,employee.password_hash,employee.role,
-                    employee.create_date,employee.create_by,employee.modify_date,employee.modify_by))
+                    employee.create_date,employee.create_by,employee.modify_date,employee.modify_by, 1))
     db.commit()
     messagebox.showinfo("Success", "Add successfully")
     window_employee_ad.destroy()

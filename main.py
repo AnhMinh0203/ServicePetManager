@@ -38,6 +38,7 @@ class Employee:
         self.create_by = create_by
         self.modify_date = datetime.now().strftime('%Y-%m-%d')
         self.modify_by = modify_by
+        self.status = 1
 
 class Customer:
     def __init__(self, name, phone_number, address,dob,gender,create_by,modify_by,modify_date):
@@ -50,6 +51,7 @@ class Customer:
         self.create_date = datetime.now().strftime('%Y-%m-%d')
         self.modify_by = modify_by
         self.modify_date = modify_date
+        self.status = 1
 class Supplier:
     def __init__(self, name, phone_number, address, create_by, modify_by, modify_date):
         self.name = name
@@ -70,6 +72,7 @@ class Bill:
         self.create_by = create_by
         self.modify_by = modify_by
         self.modify_date = modify_date
+        self.status = 1
 
 class BillDetails:
     def __init__(self, bill_id, product_id, quantity, price):
@@ -77,18 +80,30 @@ class BillDetails:
         self.product_id = product_id
         self.quantity = quantity
         self.price = price
+        self.status = 1
 
 db = mysql.connector.connect(
     host = "localhost",
     user = "root",
-    password = "Abc@123456789",
+    password = "provipxop",
     database="petmanage"
 )
 cursor = db.cursor()
 
-
 def snackManager():
     pass
+
+def log_out(window_main):
+    confirm = messagebox.askyesno("Confirm Logout", "Are you sure you want to log out?")
+    if confirm:
+        messagebox.showinfo("Logged out", "You have been logged out successfully!")
+        window_main.destroy()
+        create_login_form(cursor)
+
+def get_username():
+    cursor.execute("SELECT Name FROM Employee WHERE ID = %s", (id_user,))
+    user_name = cursor.fetchone()[0]  # Lấy tên người dùng từ cơ sở dữ liệu
+    return user_name
 def show_home_page(window_login,cursor):
     window_login.withdraw()
     window_main = Tk()
@@ -99,6 +114,19 @@ def show_home_page(window_login,cursor):
         sys.exit()
     # Set the protocol to call the on_closing function
     window_main.protocol("WM_DELETE_WINDOW", on_closing)
+
+    def update_time():
+        current_time = datetime.now().strftime('%H:%M:%S')  # Định dạng thời gian thành HH:MM:SS
+        text_time.config(text="Thời gian: " + current_time)
+        window_main.after(1000, update_time)  # Cập nhật mỗi giây (1000 mili giây)
+
+    text_time = Label(window_main, text="Time: ")
+    text_time.place(x=30, y=10, width=100, height=30)
+    update_time()
+
+    user_name = get_username()
+    text_user = Label(window_main, text="UserName: " + user_name)
+    text_user.place(x=620, y=10, width=100, height=30)
 
     button_product_manager = Button(window_main, text="Product Manager", command=lambda: create_product_manager_form(cursor,db,id_user))
     button_product_manager.place(x=30, y=50, width=200, height=30)
@@ -119,7 +147,7 @@ def show_home_page(window_login,cursor):
     button_customer_manager = Button(window_main, text="Customer Manager", command=lambda:create_customer_manager_form(cursor,db,id_user))
     button_customer_manager.place(x=30, y=300, width=200, height=30)
 
-    button_log_out = Button(window_main, text="Log out", command=snackManager)
+    button_log_out = Button(window_main, text="Log out", command=lambda: log_out(window_main))
     button_log_out.place(x=30, y=350, width=200, height=30)
 
     canvas = Canvas(window_main)
@@ -154,8 +182,8 @@ def sign_up(cursor,entr_sign_up_name, entr_sign_up_phone, gender_var,entr_sign_u
     if password != password_repeat:
         messagebox.showwarning("","Password is not match")
     else:
-        cursor.execute("Insert into Employee (Name,PhoneNumber,Gender,DateOnboard,PasswordHas,Role) values "
-                       "(%s,%s,%s,%s,%s,%s)", (name, phone_number, gender, date_onboard, password, 1))
+        cursor.execute("Insert into Employee (Name,PhoneNumber,Gender,DateOnboard,PasswordHas,Role, Status) values "
+                       "(%s,%s,%s,%s,%s,%s, %s)", (name, phone_number, gender, date_onboard, password, 1, 1))
         messagebox.showinfo("","Sign Up successfully !")
     db.commit()
 def create_login_form(cursor,current_window=None):
@@ -187,7 +215,7 @@ def create_login_form(cursor,current_window=None):
     lable_login_pass = Label(window_login, text="Mật khẩu ")
     lable_login_pass.place(x=50, y=180, width=50, height=30)
 
-    entr_login_pass = Entry(window_login)
+    entr_login_pass = Entry(window_login, show="*")
     entr_login_pass.place(x=50, y=220, width=300, height=30)
 
     button_login = Button(window_login, text="Đăng nhập", command=lambda: login(cursor, window_login, entr_login_name, entr_login_pass),
@@ -240,13 +268,13 @@ def create_sign_up_form(cursor,current_window=None):
     lable_sign_up_pass = Label(window_sign_up, text="Mật khẩu ")
     lable_sign_up_pass.place(x=50, y=260, width=50, height=30)
 
-    entr_sign_up_pass = Entry(window_sign_up)
+    entr_sign_up_pass = Entry(window_sign_up, show="*")
     entr_sign_up_pass.place(x=50, y=300, width=300, height=30)
 
     lable_sign_up_pass_repet = Label(window_sign_up, text="Nhập lại mật khẩu ")
     lable_sign_up_pass_repet.place(x=50, y=340, width=120, height=30)
 
-    entry_sign_up_pass_repet = Entry(window_sign_up)
+    entry_sign_up_pass_repet = Entry(window_sign_up, show="*")
     entry_sign_up_pass_repet.place(x=50, y=380, width=300, height=30)
 
     button_login = Button(window_sign_up, text="Đăng nhập", command=lambda: create_login_form(cursor,window_sign_up),

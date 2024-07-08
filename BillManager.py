@@ -222,29 +222,51 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
     def save_bill():
         global total_price
         create_date = datetime.today().strftime('%Y-%m-%d')
-        args_bill = [get_employee_id(employee_var), entry_phone_cus.get().strip(), create_date, total_price,0]
-        result_args = cursor.callproc("addBill",args_bill)
-        id_bill = result_args[4]
+        in_emp = get_employee_id(employee_var)
+        phone_cus = entry_phone_cus.get().strip()
+        try:
+            # Retrieve customer ID
+            cursor.execute("SELECT id FROM customers WHERE PhoneNumber = %s LIMIT 1", (phone_cus,))
+            id_cus = cursor.fetchone()
+            if id_cus:
+                id_cus = id_cus[0]
+            else:
+                messagebox.showerror("Error", "Customer not found")
+                return
 
-        for item in products:
-            args_bill_detail = [id_bill, item[0], item[1], item[2]]
-            cursor.callproc("addBillDetail", args_bill_detail)
-            for result in cursor.stored_results():
-                result.fetchone()
-        # Add services to the bill
-        for service in services:
-            print(service)
-            args_bill_service = [id_bill, service[0], service[1]]
-            cursor.callproc("addBillService",
-                            args_bill_service)
-            for result in cursor.stored_results():
-                result.fetchone()
-            print(args_bill_service)
-        db.commit()
-        messagebox.showinfo("","Add bill successfully")
-        products.clear()
-        services.clear()
-        refresh_treeview_bill(tree_manager,cursor)
+            # Insert into Bill table
+            cursor.execute(
+                "INSERT INTO Bill(IdCustomer, IdEmployee, CreateDate, TotalPrice, Status) VALUES (%s, %s, %s, %s, 1)",
+                (id_cus, in_emp, create_date, total_price))
+            id_bill = cursor.lastrowid  # Get the last inserted ID
+
+            # Add products to the bill
+            for item in products:
+                cursor.callproc("addBillDetail", (id_bill, item[0], item[1], item[2]))
+
+            # Add services to the bill
+            for service in services:
+                cursor.callproc("addBillService", (id_bill, service[0], service[1]))
+
+            # Commit transaction
+            db.commit()
+
+            # Show success message
+            messagebox.showinfo("", "Thêm hóa đơn thành công")
+            #  sao ko về được bước gọi store
+            # Clear products and services lists
+            products.clear()
+            services.clear()
+
+            # Refresh treeview (assuming tree_manager is your treeview widget)
+            refresh_treeview_bill(tree_manager, cursor)
+
+        except Exception as e:
+            db.rollback()
+            messagebox.showerror("Error", f"Error saving bill: {str(e)}")
+    #       còn cái này bây giơ
+
+
     def hide_window(form):
         form.withdraw()
 
