@@ -111,12 +111,53 @@ def search_bill(cursor,entr_search,tree):
     for row in rows:
         tree.insert("","end",values=row)
 
+def Search(cursor, entr_search, tree):
+    text = entr_search.get().strip()
+    for item in tree.get_children():
+        tree.delete(item)
+
+    if not text == "":
+        cursor.execute("""SELECT b.Id, c.Name , e.Name , b.TotalPrice, b.CreateDate FROM Bill b
+        INNER JOIN Customers c ON b.IdCustomer = c.Id 
+        INNER JOIN Employee e ON b.IdEmployee = e.Id WHERE c.name LIKE %s or e.name LIKE %s""",
+                       ('%' + text + '%', '%' + text + '%'))
+    else:
+        cursor.execute("""SELECT b.Id, c.Name , e.Name , b.TotalPrice, b.CreateDate FROM Bill b
+        INNER JOIN Customers c ON b.IdCustomer = c.Id 
+        INNER JOIN Employee e ON b.IdEmployee = e.Id""")
+    rows = cursor.fetchall()
+    for row in rows:
+        tree.insert("", "end", values=row)
+
 def create_bill_add_form(cursor,id_user,db,tree_manager):
-    global onchange_id_proc, selected_phone_customer, total_price, price_for_each_item, products
+    global onchange_id_proc, selected_phone_customer, total_price, price_for_each_item, products, onchange_id_servic, price_for_each_service, services
     onchange_id_proc = None
     total_price = 0
     price_for_each_item = 0
     products = []
+    services = []
+    onchange_id_servic = None
+    price_for_each_service = 0
+
+    def get_employee(cursor):
+        cursor.execute("SELECT Name FROM employee")
+        rows = cursor.fetchall()
+        return [row[0] for row in rows]
+
+    def get_employee_id(employee_var):
+        name = employee_var.get()
+        cursor.execute("SELECT id FROM employee where name = %s",(name,))
+        row = cursor.fetchone()
+        return row[0]
+
+    def update_option_menu(cursor, option_menu, variable):
+        values = get_employee(cursor)
+        menu = option_menu['menu']
+        menu.delete(0, 'end')
+        for item in values:
+            menu.add_command(label=item, command=lambda value=item: variable.set(value))
+        if values:
+            variable.set(values[0])
 
     def add_customer_to_bill():
         name = entry_name_cus.get().strip()
@@ -147,6 +188,18 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
         products.append((onchange_id_proc,quantity,float(price_for_each_item) * quantity))
         messagebox.showinfo("","Add product successfully")
 
+    def add_service_to_bill():
+        global  onchange_id_servic, price_for_each_service, total_price
+        service_to_add = (onchange_id_servic, float(price_for_each_service))
+
+        # Check if the service already exists in the list
+        if service_to_add not in services:
+            services.append(service_to_add)
+            total_price += (float(price_for_each_service))
+            messagebox.showinfo("", "Add Service successfully")
+        else:
+            messagebox.showinfo("", "Service already exists")
+
     def getCustomer ():
         phone_number = entry_search_cus.get().strip()
         cursor.callproc("getCustomerByPhone",[phone_number])
@@ -169,7 +222,7 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
     def save_bill():
         global total_price
         create_date = datetime.today().strftime('%Y-%m-%d')
-        args_bill = [id_user, entry_phone_cus.get().strip(), create_date, total_price,0]
+        args_bill = [get_employee_id(employee_var), entry_phone_cus.get().strip(), create_date, total_price,0]
         result_args = cursor.callproc("addBill",args_bill)
         id_bill = result_args[4]
 
@@ -178,8 +231,19 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
             cursor.callproc("addBillDetail", args_bill_detail)
             for result in cursor.stored_results():
                 result.fetchone()
+        # Add services to the bill
+        for service in services:
+            print(service)
+            args_bill_service = [id_bill, service[0], service[1]]
+            cursor.callproc("addBillService",
+                            args_bill_service)
+            for result in cursor.stored_results():
+                result.fetchone()
+            print(args_bill_service)
         db.commit()
         messagebox.showinfo("","Add bill successfully")
+        products.clear()
+        services.clear()
         refresh_treeview_bill(tree_manager,cursor)
     def hide_window(form):
         form.withdraw()
@@ -193,6 +257,18 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
             product_id = int(item['values'][0])  # Assuming the ID is the first column
             price_for_each_item = item['values'][5]
             onchange_id_proc = product_id
+            # print(f"Selected Product ID: {product_id}")
+            # print(f"Quantity: {price_for_each_item}")
+
+    def on_treeService_product_select(event):
+        global onchange_id_servic
+        global price_for_each_service
+        selected_item = treeService.selection()
+        if selected_item:
+            item = treeService.item(selected_item)
+            product_id = int(item['values'][0])  # Assuming the ID is the first column
+            price_for_each_service = item['values'][2]
+            onchange_id_servic = product_id
             # print(f"Selected Product ID: {product_id}")
             # print(f"Quantity: {price_for_each_item}")
 
@@ -241,6 +317,17 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
     # Dob
     cal = Calendar(window_bill_add, selectmode='day', year=2020, month=5, day=22)
 
+    #Employeee
+    label_Emplo = Label(window_bill_add,text="Select Employee: ")
+    label_Emplo.place(x=20, y=260, width=100, height=30)
+
+    employee_var = StringVar(window_bill_add)
+
+    employee_menu = OptionMenu(window_bill_add, employee_var, [])
+    employee_menu.place(x=130, y=260, width=100, height=30)
+
+    update_option_menu(cursor, employee_menu, employee_var)
+
     def toggle_calendar():
         if cal.winfo_ismapped():
             cal.place_forget()
@@ -276,7 +363,7 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
         tree.heading(col, text=col)
     for col in columns:
         tree.column(col, anchor=CENTER, width=column_width)
-    tree.place(x=20,y=350,width=450,height=200)
+    tree.place(x=20,y=320,width=450,height=200)
     cursor.callproc("getAllProductToAddBill")
     for result in cursor.stored_results():
         rows = result.fetchall()
@@ -285,12 +372,33 @@ def create_bill_add_form(cursor,id_user,db,tree_manager):
     tree.bind("<<TreeviewSelect>>", on_tree_product_select)
 
     label_quantity = Label(window_bill_add, text="Quantity")
-    label_quantity.place(x=530, y=330, width=50, height=30)
+    label_quantity.place(x=530, y=300, width=50, height=30)
     entr_quantity = Entry(window_bill_add)
-    entr_quantity.place(x=530, y=370, width=100, height=30)
+    entr_quantity.place(x=530, y=340, width=100, height=30)
 
     button_add_product = Button(window_bill_add, text="Add Product",command=add_product_to_bill)
-    button_add_product.place(x=530, y=410, width=100, height=30)
+    button_add_product.place(x=530, y=380, width=100, height=30)
+
+    #Service
+    columns = ("ID", "Name", "Price", "Description")
+    treeService = ttk.Treeview(window_bill_add, columns=columns, show="headings")
+    total_width = 450
+    column_width = total_width // len(columns)
+
+    for col in columns:
+        treeService.heading(col, text=col)
+    for col in columns:
+        treeService.column(col, anchor=CENTER, width=column_width)
+    treeService.place(x=20, y=550, width=450, height=200)
+    cursor.callproc("getAllService")
+    for result in cursor.stored_results():
+        rows = result.fetchall()
+        for row in rows:
+            treeService.insert("", "end", values=row)
+    treeService.bind("<<TreeviewSelect>>", on_treeService_product_select)
+
+    button_add_product = Button(window_bill_add, text="Add Service", command=add_service_to_bill)
+    button_add_product.place(x=530, y=640, width=100, height=30)
 
     # Add bill
     button_save_bill = Button(window_bill_add, text="Save Bill",command=save_bill)
@@ -320,10 +428,11 @@ def create_bill_detail_form(cursor,id_bill):
     heading_bill_mg.place(x=20, y=30, width=400, height=30)
 
     # Tree view
-    columns = ("ID", "Name", "Quantity", "TotalPrice")
+    columns = ("ID", "Name", "NameService", "Quantity", "TotalPrice")
     tree = ttk.Treeview(window_bill_mg, columns=columns, show="headings")
     tree.heading("ID", text="ID")
-    tree.heading("Name", text="Name")
+    tree.heading("Name", text="Name Product")
+    tree.heading("NameService", text="Name Service")
     tree.heading("Quantity", text="Quantity")   
     tree.heading("TotalPrice", text="TotalPrice")
 
@@ -483,7 +592,6 @@ def create_bill_manager_form(cursor,db,id_user):
     heading_bill_mg = Label(window_bill_mg,text="BILL MANAGEMENT",font=("Helvetica", 20, "bold"), fg="green")
     heading_bill_mg.place(x=200, y=30, width=400, height=30)
 
-
     # Tree view
     columns = ("ID","NameCustomer", "NameEmployee", "TotalPrice","CreateDate")
     tree_manager = ttk.Treeview(window_bill_mg, columns=columns, show="headings")
@@ -508,7 +616,7 @@ def create_bill_manager_form(cursor,db,id_user):
     entr_search = Entry(window_bill_mg)
     entr_search.place(x=400, y=80, width=300, height=30)
 
-    button_bill_manager = Button(window_bill_mg, text="Search", command=lambda: search_bill(cursor, entr_search, tree_manager))
+    button_bill_manager = Button(window_bill_mg, text="Search", command=lambda: Search(cursor, entr_search, tree_manager))
     button_bill_manager.place(x=720, y=80, width=80, height=30)
 
     button_bill_manager = Button(window_bill_mg, text="Add",

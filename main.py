@@ -4,18 +4,27 @@ from tkinter import messagebox,ttk
 import mysql.connector
 from datetime import datetime, date
 
-# from ServicePetManager.BillManager import create_bill_manager_form
-from CustomerManager import create_customer_manager_form
-from EmployeeManager import create_employee_manager_form
-from ProductManager import add_product, refresh_treeview, create_product_add_form, \
+from ServicePetManager.BillManager import create_bill_manager_form
+from ServicePetManager.CustomerManager import create_customer_manager_form
+from ServicePetManager.EmployeeManager import create_employee_manager_form
+from ServicePetManager.ProductManager import add_product, refresh_treeview, create_product_add_form, \
     create_product_update_form, delete_product, search_product, create_product_manager_form
-from ReportManager import create_report_manager_form
-from ServiceManager import create_service_manager_form
-from SupplierManager import create_supplier_manager_form
-
-from BillManager import create_bill_manager_form
+from ServicePetManager.ReportManager import create_report_manager_form
+from ServicePetManager.ServiceManager import create_service_manager_form
+from ServicePetManager.SupplierManager import create_supplier_manager_form
 
 id_user = None
+
+class Service:
+    def __init__(self, name, price,description,create_by,modify_by):
+        self.name = name
+        self.price = price
+        self.description = description
+        self.create_date = datetime.now().strftime('%Y-%m-%d')
+        self.modify_date = datetime.now().strftime('%Y-%m-%d')
+        self.create_by = create_by
+        self.modify_by = modify_by
+        self.status = 1
 class Product:
     def __init__(self, name, type,sold, amount, price,supplier,create_by,modify_by):
         self.name = name
@@ -81,21 +90,11 @@ class BillDetails:
         self.quantity = quantity
         self.price = price
 
-class Service:
-    def __init__(self, name, price, description,create_by,modify_by):
-        self.name = name
-        self.price = price
-        self.description = description
-        self.create_date = datetime.now().strftime('%Y-%m-%d')
-        self.create_by = create_by
-        self.modify_date = datetime.now().strftime('%Y-%m-%d')
-        self.modify_by = modify_by
-
 db = mysql.connector.connect(
     host = "localhost",
     user = "root",
     password = "020303",
-    database="snackmanage"
+    database="petmanage"
 )
 cursor = db.cursor()
 
