@@ -614,7 +614,6 @@ def create_bill_manager_form(cursor,db,id_user):
     heading_bill_mg = Label(window_bill_mg,text="BILL MANAGEMENT",font=("Helvetica", 20, "bold"), fg="green")
     heading_bill_mg.place(x=200, y=30, width=400, height=30)
 
-
     # Tree view
     columns = ("ID","NameCustomer", "NameEmployee", "TotalPrice","CreateDate")
     tree_manager = ttk.Treeview(window_bill_mg, columns=columns, show="headings")

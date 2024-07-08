@@ -10,9 +10,21 @@ from ServicePetManager.EmployeeManager import create_employee_manager_form
 from ServicePetManager.ProductManager import add_product, refresh_treeview, create_product_add_form, \
     create_product_update_form, delete_product, search_product, create_product_manager_form
 from ServicePetManager.ReportManager import create_report_manager_form
+from ServicePetManager.ServiceManager import create_service_manager_form
 from ServicePetManager.SupplierManager import create_supplier_manager_form
 
 id_user = None
+
+class Service:
+    def __init__(self, name, price,description,create_by,modify_by):
+        self.name = name
+        self.price = price
+        self.description = description
+        self.create_date = datetime.now().strftime('%Y-%m-%d')
+        self.modify_date = datetime.now().strftime('%Y-%m-%d')
+        self.create_by = create_by
+        self.modify_by = modify_by
+        self.status = 1
 class Product:
     def __init__(self, name, type,sold, amount, price,supplier,create_by,modify_by):
         self.name = name
@@ -85,7 +97,11 @@ class BillDetails:
 db = mysql.connector.connect(
     host = "localhost",
     user = "root",
+<<<<<<< HEAD
     password = "provipxop",
+=======
+    password = "020303",
+>>>>>>> cd1a4c7d25805926895acdc6692bb63afd073723
     database="petmanage"
 )
 cursor = db.cursor()
@@ -115,6 +131,7 @@ def show_home_page(window_login,cursor):
     # Set the protocol to call the on_closing function
     window_main.protocol("WM_DELETE_WINDOW", on_closing)
 
+<<<<<<< HEAD
     def update_time():
         current_time = datetime.now().strftime('%H:%M:%S')  # Định dạng thời gian thành HH:MM:SS
         text_time.config(text="Thời gian: " + current_time)
@@ -127,6 +144,11 @@ def show_home_page(window_login,cursor):
     user_name = get_username()
     text_user = Label(window_main, text="UserName: " + user_name)
     text_user.place(x=620, y=10, width=100, height=30)
+=======
+    button_service_manager = Button(window_main, text="Service Manager",
+                                    command=lambda: create_service_manager_form(cursor, db, id_user))
+    button_service_manager.place(x=30, y=0, width=200, height=30)
+>>>>>>> cd1a4c7d25805926895acdc6692bb63afd073723
 
     button_product_manager = Button(window_main, text="Product Manager", command=lambda: create_product_manager_form(cursor,db,id_user))
     button_product_manager.place(x=30, y=50, width=200, height=30)

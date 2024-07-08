@@ -4,8 +4,6 @@ from tkinter import messagebox,ttk
 import mysql.connector
 from datetime import datetime
 
-def test():
-    pass
 def refresh_treeview(tree,cursor):
     # Clear the current items in the tree
     for item in tree.get_children():

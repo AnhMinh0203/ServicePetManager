@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ProjectModuleManager">
@@ -5,4 +6,13 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/ServicePetManager.iml" filepath="$PROJECT_DIR$/.idea/ServicePetManager.iml" />
     </modules>
   </component>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/ServicePetManager.iml" filepath="$PROJECT_DIR$/.idea/ServicePetManager.iml" />
+    </modules>
+  </component>
+>>>>>>> cd1a4c7d25805926895acdc6692bb63afd073723
 </project>
