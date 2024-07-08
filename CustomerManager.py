@@ -9,13 +9,13 @@ def refresh_treeview(tree,cursor):
     # Clear the current items in the tree
     for item in tree.get_children():
         tree.delete(item)
-    cursor.execute("SELECT * FROM Customers")
+    cursor.execute("SELECT * FROM Customers WHERE Status = 1")
     rows = cursor.fetchall()
     for row in rows:
         tree.insert("", "end", values=row)
 def search_customer(cursor,entr_search,tree):
     text = entr_search.get().strip()
-    cursor.execute("SELECT * FROM Customers WHERE Name LIKE %s", ('%' + text + '%',))
+    cursor.execute("SELECT * FROM Customers WHERE Name LIKE %s AND Status = 1", ('%' + text + '%',))
     rows = cursor.fetchall()
 
     for item in tree.get_children():
@@ -219,7 +219,7 @@ def delete_customer(cursor,id_product,tree,db):
     ask = messagebox.askyesno("Confirm delete","Do you want to delete this customer ?")
     if ask:
         cursor.execute("Update bill set IdCustomer = NULL where IdCustomer = %s", (id_product,))
-        cursor.execute("Delete from customers where id = %s",(id_product,))
+        cursor.execute("UPDATE customers SET Status = 0 WHERE id = %s", (id_product,))
         db.commit()
         refresh_treeview(tree,cursor)
         messagebox.showinfo("Delete alert","Delete successfully !")
@@ -293,7 +293,7 @@ def create_customer_manager_form(cursor,db,id_user):
         tree.column(col, anchor=CENTER, width=column_width)
 
     tree.place(x=20, y=130, width=800, height=200)
-    cursor.execute("SELECT * FROM Customers")
+    cursor.execute("SELECT * FROM Customers WHERE Status = 1")
     rows = cursor.fetchall()
     for row in rows:
         tree.insert("", "end", values=row)

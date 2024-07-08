@@ -97,7 +97,7 @@ class BillDetails:
 db = mysql.connector.connect(
     host = "localhost",
     user = "root",
-    password = "Abc@123456789",
+    password = "provipxop",
     database="petmanage"
 )
 cursor = db.cursor()
@@ -176,7 +176,7 @@ def login(cursor, window_login, entr_login_name, entr_login_pass):
     phone_number = entr_login_name.get()
     password = entr_login_pass.get()
     # Execute a query to check login credentials
-    cursor.execute("SELECT * FROM Employee WHERE PhoneNumber = %s AND PasswordHas = %s LIMIT 1", (phone_number, password))
+    cursor.execute("SELECT * FROM Employee WHERE PhoneNumber = %s AND PasswordHas = %s AND Status = 1 LIMIT 1", (phone_number, password))
     row = cursor.fetchone()
     if row:
         id_user = row[0]
@@ -195,6 +195,13 @@ def sign_up(cursor,entr_sign_up_name, entr_sign_up_phone, gender_var,entr_sign_u
     date_onboard = datetime.now().strftime('%Y-%m-%d')
     if password != password_repeat:
         messagebox.showwarning("","Password is not match")
+
+    cursor.execute("SELECT * FROM Employee WHERE PhoneNumber = %s", (phone_number,))
+    existing_employee = cursor.fetchone()
+
+    if existing_employee:
+        messagebox.showwarning("", "Phone number already exists")
+        return
     else:
         cursor.execute("Insert into Employee (Name,PhoneNumber,Gender,DateOnboard,PasswordHas,Role, Status) values "
                        "(%s,%s,%s,%s,%s,%s, %s)", (name, phone_number, gender, date_onboard, password, 1, 1))
