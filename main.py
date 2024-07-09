@@ -97,7 +97,7 @@ class BillDetails:
 db = mysql.connector.connect(
     host = "localhost",
     user = "root",
-    password = "Abc@123456789",
+    password = "provipxop",
     database="petmanage"
 )
 cursor = db.cursor()

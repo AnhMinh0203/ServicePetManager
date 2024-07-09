@@ -145,12 +145,16 @@ def create_report_manager_form(cursor):
     # Export button
     button_export_excel = Button(window_report_mg,text="Export Excel",command=lambda: export_excel(cursor,select_option.get(),cal.get_date()))
     button_export_excel.place(x=380, y=90, width=150, height=30)
+    button_export_excel.configure(bg='#758694', fg='#F6F5F5')
     # Selection
     select_option = StringVar(window_report_mg)
     select_option.set("All months of the year")  # set the default value
+
     gender_menu = OptionMenu(window_report_mg, select_option,
                              "Day in month", "Quarter of the year", "All months of the year")
     gender_menu.place(x=650, y=90, width=150, height=30)
+    gender_menu.configure(bg='#758694', fg='#F6F5F5')
+
     # Calendar
     cal = Calendar(window_report_mg, selectmode='day', year=datetime.now().year, month=datetime.now().month, day=datetime.now().day)
     def toggle_calendar():
@@ -162,6 +166,8 @@ def create_report_manager_form(cursor):
 
     dob = Button(window_report_mg, text="Date", command=toggle_calendar)
     dob.place(x=550, y=90, width=80, height=30)
+    dob.configure(bg='#758694', fg='#F6F5F5')
+
     # Total price
     label_total_price_var = Label(window_report_mg, text="Total income", anchor="w", )
     label_total_price_var.place(x=20, y=80, width=150, height=30)

@@ -57,7 +57,7 @@ def add_product(cursor, product, tree, window_product_ad, db):
                    "values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                    (product.name, product.type,product.supplier, product.sold, product.amount, product.price, product.create_by, product.create_date,product.modify_by,product.create_date))
     db.commit()
-    messagebox.showinfo("Thành công", "Thêm sản phẩm thành công")
+    messagebox.showinfo("Success", "Product added successfully")
     window_product_ad.destroy()
     refresh_treeview(tree, cursor)
 def create_product_add_form(cursor,tree,db,id_user):
@@ -120,44 +120,45 @@ def create_product_add_form(cursor,tree,db,id_user):
     position_y = int((screen_height / 3) - (400 / 2))
     window_product_ad.geometry(f"300x400+{position_x}+{position_y}")
 
-    lable_product_name = Label(window_product_ad, text="Tên")
+    lable_product_name = Label(window_product_ad, text="Name")
     lable_product_name.place(x=20, y=50, width=80, height=30)
 
     entr_product_name = Entry(window_product_ad)
     entr_product_name.place(x=100, y=50, width=150, height=30)
 
-    label_product_type = Label(window_product_ad,text="Loại sản phẩm")
-    label_product_type.place(x=20, y =100, width=70,height=30)
+    label_product_type = Label(window_product_ad, text="Type")
+    label_product_type.place(x=20, y=100, width=70, height=30)
 
     select_type = StringVar(window_product_ad)
     option_menu_type = OptionMenu(window_product_ad, select_type, [])
     option_menu_type.place(x=100, y=100, width=80, height=30)
 
-    update_option_menu(cursor, option_menu_type, select_type,"Loại sản phẩm")
+    update_option_menu(cursor, option_menu_type, select_type, "Type")
 
-    label_product_amount = Label(window_product_ad,text="Số lượng")
-    label_product_amount.place(x=20,y=150,width=50, height=30)
+    label_product_amount = Label(window_product_ad, text="Amount")
+    label_product_amount.place(x=20, y=150, width=50, height=30)
 
     entry_product_amount = Entry(window_product_ad)
-    entry_product_amount.place(x=100, y=150,width=100, height=30)
+    entry_product_amount.place(x=100, y=150, width=100, height=30)
 
-    label_product_price = Label(window_product_ad,text="Giá")
-    label_product_price.place(x=20,y=200,width=80,height=30)
+    label_product_price = Label(window_product_ad, text="Price")
+    label_product_price.place(x=20, y=200, width=80, height=30)
 
     entry_product_price = Entry(window_product_ad)
-    entry_product_price.place(x=100, y=200,width=100, height=30)
+    entry_product_price.place(x=100, y=200, width=100, height=30)
 
-    label_product_type = Label(window_product_ad, text="Nhà cung cấp")
+    label_product_type = Label(window_product_ad, text="Supplier")
     label_product_type.place(x=20, y=250, width=70, height=30)
 
     select_supplier = StringVar(window_product_ad)
     option_menu_suplier = OptionMenu(window_product_ad, select_supplier, [])
-    option_menu_suplier.place(x=100, y=250, width=80, height=30)
+    option_menu_suplier.place(x=100, y=250, width=150, height=30)
 
-    update_option_menu(cursor, option_menu_suplier, select_supplier,"Nhà cung cấp")
+    update_option_menu(cursor, option_menu_suplier, select_supplier, "Supplier")
 
-    button_product_add = Button(window_product_ad,text="Thêm",command=lambda:add_product_action())
+    button_product_add = Button(window_product_ad,text="Add",command=lambda:add_product_action())
     button_product_add.place(x=150, y=300,width=100, height=30)
+    button_product_add.configure(bg='#758694', fg='#F6F5F5')
     window_product_ad.mainloop()
 
 def update_product(cursor,product,tree,window_product_ad,id,db):
@@ -182,7 +183,7 @@ def update_product(cursor,product,tree,window_product_ad,id,db):
             WHERE Id = %s
         """, (name, IdType,IdSupplier, sold, amount, price, modify_by, modify_date, id))
     db.commit()
-    messagebox.showinfo("Thành công", "Thêm sản phẩm thành công")
+    messagebox.showinfo("Success", "Product added successfully")
     window_product_ad.destroy()
     refresh_treeview(tree,cursor)
 
@@ -237,7 +238,7 @@ def create_product_update_form(cursor,tree,id_product,db,id_user):
 
     window_product_ad = Tk()
     window_product_ad.geometry("200x400")
-    window_product_ad.title("Add Product")
+    window_product_ad.title("Update Product")
     screen_width = window_product_ad.winfo_screenwidth()
     screen_height = window_product_ad.winfo_screenheight()
 
@@ -246,44 +247,45 @@ def create_product_update_form(cursor,tree,id_product,db,id_user):
     position_y = int((screen_height / 3) - (400 / 2))
     window_product_ad.geometry(f"300x400+{position_x}+{position_y}")
 
-    lable_product_name = Label(window_product_ad, text="Tên")
+    lable_product_name = Label(window_product_ad, text="Name")
     lable_product_name.place(x=20, y=50, width=80, height=30)
 
     entr_product_name = Entry(window_product_ad)
     entr_product_name.place(x=100, y=50, width=150, height=30)
 
-    label_product_type = Label(window_product_ad, text="Loại sản phẩm")
+    label_product_type = Label(window_product_ad, text="Type")
     label_product_type.place(x=20, y=100, width=70, height=30)
 
     select_type = StringVar(window_product_ad)
     option_menu_type = OptionMenu(window_product_ad, select_type, [])
     option_menu_type.place(x=100, y=100, width=80, height=30)
 
-    update_option_menu(cursor, option_menu_type, select_type, "Loại sản phẩm")
+    update_option_menu(cursor, option_menu_type, select_type, "Type")
 
-    label_product_amount = Label(window_product_ad, text="Số lượng")
+    label_product_amount = Label(window_product_ad, text="Amount")
     label_product_amount.place(x=20, y=150, width=50, height=30)
 
     entry_product_amount = Entry(window_product_ad)
     entry_product_amount.place(x=100, y=150, width=100, height=30)
 
-    label_product_price = Label(window_product_ad, text="Giá")
+    label_product_price = Label(window_product_ad, text="Price")
     label_product_price.place(x=20, y=200, width=80, height=30)
 
     entry_product_price = Entry(window_product_ad)
     entry_product_price.place(x=100, y=200, width=100, height=30)
 
-    label_product_type = Label(window_product_ad, text="Nhà cung cấp")
+    label_product_type = Label(window_product_ad, text="Supplier")
     label_product_type.place(x=20, y=250, width=70, height=30)
 
     select_supplier = StringVar(window_product_ad)
     option_menu_suplier = OptionMenu(window_product_ad, select_supplier, [])
-    option_menu_suplier.place(x=100, y=250, width=80, height=30)
+    option_menu_suplier.place(x=100, y=250, width=150, height=30)
 
-    update_option_menu(cursor, option_menu_suplier, select_supplier, "Nhà cung cấp")
+    update_option_menu(cursor, option_menu_suplier, select_supplier, "Supplier")
 
-    button_product_add = Button(window_product_ad, text="Sửa", command=lambda: update_product_action())
+    button_product_add = Button(window_product_ad, text="Update", command=lambda: update_product_action())
     button_product_add.place(x=150, y=300, width=100, height=30)
+    button_product_add.configure(bg='#758694', fg='#F6F5F5')
 
     name,type,supplier,sold,inventory,price = detail_product(cursor,id_product)
     entr_product_name.insert(0,name)
@@ -294,7 +296,7 @@ def create_product_update_form(cursor,tree,id_product,db,id_user):
     window_product_ad.mainloop()
 
 def delete_product(cursor,id_product,tree,db):
-    ask = messagebox.askyesno("Xác nhận xóa","Bạn có muốn xóa sản phẩm này không ?")
+    ask = messagebox.askyesno("Confirm delete","Do you want to delete this product ?")
     if ask:
         cursor.execute("SELECT Id from bill_detail where ProductId = %s", (id_product,))
         rows = cursor.fetchall()
@@ -305,7 +307,7 @@ def delete_product(cursor,id_product,tree,db):
         cursor.execute("Delete from product where id = %s",(id_product,))
         db.commit()
         refresh_treeview(tree,cursor)
-        messagebox.showinfo("Xóa","Xóa thành công !")
+        messagebox.showinfo("Delete alert","Delete successfully !")
     else:
         return
 
@@ -340,10 +342,10 @@ def create_manager_type_form(cursor, db):
             result = cursor.fetchone()
 
             if result[0] > 0:
-                messagebox.showwarning("", "Loại sản phẩm đã tồn tại")
+                messagebox.showwarning("", "Type already exists")
             else:
-                cursor.execute("Insert into Type (name) values (%s)",(name_type,))
-                messagebox.showinfo("","Thêm thành công")
+                cursor.execute("Insert into Type (name) values (%s)", (name_type,))
+                messagebox.showinfo("", "Add successfully")
                 db.commit()
 
                 window_product_type.destroy()
@@ -359,14 +361,15 @@ def create_manager_type_form(cursor, db):
         position_y = int((screen_height / 3) - (400 / 2))
         window_product_type.geometry(f"200x200+{position_x}+{position_y}")
 
-        label_product_type = Label(window_product_type, text="Loại sản phẩm")
+        label_product_type = Label(window_product_type, text="Name type")
         label_product_type.place(x=20, y=20, width=80, height=30)
 
         entry_product_type = Entry(window_product_type)
         entry_product_type.place(x=20, y=50, width=160, height=30)
 
-        button_save_type = Button(window_product_type,text="Lưu",command=add_type)
+        button_save_type = Button(window_product_type, text="Save", command=add_type)
         button_save_type.place(x=120, y=80, width=60, height=30)
+        button_save_type.configure(bg='#758694', fg='#F6F5F5')
         refresh_treeview_type(tree, cursor)
         window_product_type.mainloop()
 
@@ -375,12 +378,12 @@ def create_manager_type_form(cursor, db):
         result = cursor.fetchone()
 
         if result[0] > 0:
-            messagebox.showwarning("","Không thể xóa loại này vì nó đang được sử dụng trong các sản phẩm. Vui lòng xóa hoặc thay đổi loại sản phẩm trước.")
+            messagebox.showwarning("", "Cannot delete this type because it is being used in products. Please delete or change the type in products first.")
         else:
             cursor.execute("delete from Type where id =(%s)", (selected_id,))
             db.commit()
-            refresh_treeview_type(tree, cursor,"Manager Type")
-            messagebox.showinfo("Xóa", "Xóa thành công !")
+            refresh_treeview_type(tree, cursor, "Manager Type")
+            messagebox.showinfo("Delete alert", "Delete successfully !")
 
     window_product_type = Tk()
     window_product_type.geometry("400x400")
@@ -413,10 +416,13 @@ def create_manager_type_form(cursor, db):
     tree.place(x=20, y=100, width=360, height=200)
     refresh_treeview_type(tree, cursor)
 
-    button_add_type = Button(window_product_type,text="Thêm",command=create_add_type_form)
+    button_add_type = Button(window_product_type, text="Add", command=create_add_type_form)
     button_add_type.place(x=320, y=320, width=50, height=30)
-    button_delete_type = Button(window_product_type, text="Xóa", command=delete_type)
-    button_delete_type.place(x=240,y=320,width=50, height=30)
+    button_add_type.configure(bg='#758694', fg='#F6F5F5')
+
+    button_delete_type = Button(window_product_type, text="Delete", command=delete_type)
+    button_delete_type.place(x=240, y=320, width=50, height=30)
+    button_delete_type.configure(bg='#758694', fg='#F6F5F5')
 
     tree.bind("<<TreeviewSelect>>", on_tree_select)
     window_product_type.mainloop()
@@ -448,28 +454,44 @@ def create_product_manager_form(cursor,db,id_user):
     heading_product_mg = Label(window_product_mg,text="PRODUCT MANAGEMENT",font=("Helvetica", 20, "bold"), fg="green")
     heading_product_mg.place(x=200, y=30, width=400, height=30)
 
-    button_product_manager = Button(window_product_mg, text="Xuất Excel",command=lambda: export_excel(cursor))
+    button_product_manager = Button(window_product_mg, text="Export Excel", command=lambda: export_excel(cursor))
     button_product_manager.place(x=50, y=80, width=80, height=30)
+    button_product_manager.configure(bg='#758694', fg='#F6F5F5')
+
 
     # Search
     entr_search = Entry(window_product_mg)
     entr_search.place(x=400, y=80, width=300, height=30)
 
-    button_product_manager = Button(window_product_mg, text="Tìm kiếm", command=lambda: search_product(cursor,entr_search,tree))
+    button_product_manager = Button(window_product_mg, text="Search",
+                                    command=lambda: search_product(cursor, entr_search, tree))
     button_product_manager.place(x=720, y=80, width=80, height=30)
+    button_product_manager.configure(bg='#758694', fg='#F6F5F5')
 
     # Add, Update, Delete buttons
-    button_type_manager = Button(window_product_mg, text="Quản lý loại sản phẩm", command=lambda: create_manager_type_form(cursor, db))
+    button_type_manager = Button(window_product_mg, text="Manage Type",
+                                 command=lambda: create_manager_type_form(cursor, db))
     button_type_manager.place(x=420, y=450, width=80, height=30)
+    button_type_manager.configure(bg='#758694', fg='#F6F5F5')
 
-    button_product_manager = Button(window_product_mg, text="Thêm", command=lambda: create_product_add_form(cursor,tree,db,id_user))
+
+    button_product_manager = Button(window_product_mg, text="Add",
+                                    command=lambda: create_product_add_form(cursor, tree, db, id_user))
     button_product_manager.place(x=520, y=450, width=80, height=30)
+    button_product_manager.configure(bg='#758694', fg='#F6F5F5')
 
-    button_product_manager = Button(window_product_mg, text="Sửa", command=lambda: create_product_update_form(cursor,tree,selected_id,db,id_user))
+
+    button_product_manager = Button(window_product_mg, text="Update",
+                                    command=lambda: create_product_update_form(cursor, tree, selected_id, db, id_user))
     button_product_manager.place(x=620, y=450, width=80, height=30)
+    button_product_manager.configure(bg='#758694', fg='#F6F5F5')
 
-    button_product_manager = Button(window_product_mg, text="Xóa", command=lambda: delete_product(cursor,selected_id,tree,db))
+
+    button_product_manager = Button(window_product_mg, text="Delete",
+                                    command=lambda: delete_product(cursor, selected_id, tree, db))
     button_product_manager.place(x=720, y=450, width=80, height=30)
+    button_product_manager.configure(bg='#758694', fg='#F6F5F5')
+
     # Tree view
     columns = ("ID","Name", "Type", "Supplier","Sold", "Inventory", "Price","CreateBy","CreateDate","ModifyBy","ModifyDate")
     tree = ttk.Treeview(window_product_mg, columns=columns, show="headings")
