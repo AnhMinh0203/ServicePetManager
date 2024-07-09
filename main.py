@@ -121,6 +121,7 @@ def show_home_page(window_login,cursor):
     window_main = Tk()
     window_main.geometry("800x600")
     window_main.title("Home")
+    window_main.configure(bg='white')
     def on_closing():
         window_main.destroy()
         sys.exit()
@@ -137,6 +138,7 @@ def show_home_page(window_login,cursor):
 
     user_name = get_username()
     text_user = Label(window_main, text="Xin chào: " + user_name)
+    text_user.configure(bg='white')
     text_user.place(x=550, y=10, width=300, height=30)
     button_service_manager = Button(window_main, text="Quản lý dịch vụ",
                                     command=lambda: create_service_manager_form(cursor, db, id_user))
@@ -165,9 +167,9 @@ def show_home_page(window_login,cursor):
     button_log_out.place(x=30, y=400, width=200, height=30)
 
     canvas = Canvas(window_main)
-    img_home = PhotoImage(master = canvas,file="Logo.png")
+    img_home = PhotoImage(master = canvas,file="logo2.png")
     label_img_home = Label(window_main, image=img_home)
-    label_img_home.place(x=250, y=30, width=500, height=600)
+    label_img_home.place(x=250, y=30, width=800, height=445)
 
     window_main.mainloop()
 # Login
